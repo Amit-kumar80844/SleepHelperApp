@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.sleephelperapp" />
+                  <option name="mobileSdkAppId" value="1:1016998926130:android:546ce6f90bdd3d5673692b" />
+                  <option name="projectId" value="sleep-helper-11bd4" />
+                  <option name="projectNumber" value="1016998926130" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

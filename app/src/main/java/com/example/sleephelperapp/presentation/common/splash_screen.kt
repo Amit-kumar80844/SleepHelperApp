@@ -1,4 +1,4 @@
-package com.example.sleephelperapp.presentation
+package com.example.sleephelperapp.presentation.common
 
 
 import androidx.compose.foundation.background
@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -20,17 +19,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.sleephelperapp.presentation.common.ProgressBar_Splash
-import com.example.sleephelperapp.presentation.navigation.Graph
-
 import kotlinx.coroutines.delay
+private const val SPLASH_SCREEN_DURATION_MILLIS = 2000L
 @Composable
 fun SplashScreen(navController: NavHostController) {
     // Display the splash screen
     SplashDisplay()
     LaunchedEffect(Unit) {
-        delay(2000)
-//         add navigation
+        delay(SPLASH_SCREEN_DURATION_MILLIS)
+
     }
 }
 @Composable
@@ -55,7 +52,7 @@ fun SplashDisplay() {
 }
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun DefaultPreview2() {
     SplashDisplay()
 }
 

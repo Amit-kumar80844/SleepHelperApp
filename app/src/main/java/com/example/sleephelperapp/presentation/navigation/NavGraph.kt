@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.sleephelperapp.presentation.SplashScreen
+import com.example.sleephelperapp.presentation.common.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController){
