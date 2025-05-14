@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -115,6 +116,31 @@ fun LoginScreen(navigator: NavHostController) {
                     .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                 onClick = {
                     navigator.navigate("home") // Backend login process can be added here
+                }
+            )
+            Text(
+                text = "or",
+                modifier = Modifier.fillMaxWidth(),
+                color = Color(0xFFF8CA2F),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                fontSize = 20.sp
+            )
+            CustomButton(
+                text = "Sign in with google",
+                fontSize = 20,
+                textColor = Color.White,
+                buttonColor = MaterialTheme.colorScheme.primary,
+                transparency = 0f,
+                roundedCorner = 50,
+                modifier = Modifier
+                    .padding(18.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
+                    .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
+                onClick = {
+                    // Validation and navigation logic
                 }
             )
 

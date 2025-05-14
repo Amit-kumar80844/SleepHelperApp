@@ -11,10 +11,12 @@ composeBom = "2024.09.00"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.2.0"
 material3 = "1.x.x"
+material3Version = "1.2.0"
 navigationCompose = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material3-v120 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

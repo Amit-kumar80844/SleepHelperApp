@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,12 +40,12 @@ import com.example.sleephelperapp.presentation.common.Top_Bar
 
 @Composable
 fun RegistrationScreen(navigator: NavHostController) {
-    RegistationWithTopBar(navigator = navigator) // Changed to call the new composable
+    Registation_screen(navigator = navigator) // Changed to call the new composable
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistationWithTopBar(navigator: NavHostController) { // Renamed to avoid conflict and for clarity
+fun Registation_screen(navigator: NavHostController) { // Renamed to avoid conflict and for clarity
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -141,6 +142,31 @@ fun RegistationWithTopBar(navigator: NavHostController) { // Renamed to avoid co
                     }
                 )
                 Text(
+                    text = "or",
+                    modifier = Modifier.fillMaxWidth(),
+                    color = Color(0xFFF8CA2F),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Italic,
+                    fontSize = 20.sp
+                )
+                CustomButton(
+                    text = "Sign in with google",
+                    fontSize = 20,
+                    textColor = Color.White,
+                    buttonColor = MaterialTheme.colorScheme.primary,
+                    transparency = 0f,
+                    roundedCorner = 50,
+                    modifier = Modifier
+                        .padding(18.dp)
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
+                        .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
+                    onClick = {
+                        // Validation and navigation logic
+                    }
+                )
+                Text(
                     text = "Already have an account?",
                     modifier = Modifier.fillMaxWidth(),
                     color = Color(0xFFF8CA2F),
@@ -171,8 +197,5 @@ fun RegistationWithTopBar(navigator: NavHostController) { // Renamed to avoid co
 @Preview(showBackground = true)
 @Composable
 fun RegistrationScreenPreview() {
-    // It's good practice to wrap previews in your app's theme if you have one
-    // YourAppTheme {
-    RegistationWithTopBar(rememberNavController())
-    // }
+    Registation_screen(rememberNavController())
 }

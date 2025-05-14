@@ -27,7 +27,6 @@ fun SplashScreen(navController: NavHostController) {
     SplashDisplay()
     LaunchedEffect(Unit) {
         delay(SPLASH_SCREEN_DURATION_MILLIS)
-
     }
 }
 @Composable
