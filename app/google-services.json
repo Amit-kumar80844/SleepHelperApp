@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1016998926130",
+    "project_id": "sleep-helper-11bd4",
+    "storage_bucket": "sleep-helper-11bd4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016998926130:android:a89a3d8c7781aa9c73692b",
+        "android_client_info": {
+          "package_name": "com.example.sleephelperandroidapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrXAPYcPq9DzRzmYOvk5vC4KJd9yqMojI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016998926130:android:546ce6f90bdd3d5673692b",
+        "android_client_info": {
+          "package_name": "com.example.sleephelperapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrXAPYcPq9DzRzmYOvk5vC4KJd9yqMojI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
