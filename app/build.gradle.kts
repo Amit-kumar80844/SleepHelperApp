@@ -6,7 +6,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
-
 android {
     namespace = "com.example.sleephelperapp"
     compileSdk = 35
@@ -44,7 +43,12 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -54,6 +58,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.auth)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material3.v120)
+    implementation(libs.material3)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,11 +69,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-
-    implementation(libs.androidx.navigation.compose)
-    implementation (libs.androidx.material3.v120)
-    implementation(libs.material3)
-
 }

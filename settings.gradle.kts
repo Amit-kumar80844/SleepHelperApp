@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "SleepHelperApp"
 include(":app")
- 
