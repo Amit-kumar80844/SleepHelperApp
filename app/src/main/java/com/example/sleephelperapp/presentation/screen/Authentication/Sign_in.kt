@@ -45,7 +45,7 @@ fun LoginScreen(navigator: NavHostController) {
     ) { innerPadding ->Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding),  // ✅ Apply innerPadding
+            .padding(innerPadding),
         contentAlignment = Alignment.Center
     )
     {
@@ -67,7 +67,7 @@ fun LoginScreen(navigator: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                leadingIcon = { null },
+                leadingIcon = {null},
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_email_24),
@@ -115,6 +115,7 @@ fun LoginScreen(navigator: NavHostController) {
                     .fillMaxHeight(0.15f)
                     .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                 onClick = {
+
                     navigator.navigate("home") // Backend login process can be added here
                 }
             )

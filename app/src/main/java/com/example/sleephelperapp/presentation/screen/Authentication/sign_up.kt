@@ -138,6 +138,7 @@ fun Registation_screen(navigator: NavHostController) { // Renamed to avoid confl
                         .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
                         .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                     onClick = {
+
                         // Validation and navigation logic
                     }
                 )
