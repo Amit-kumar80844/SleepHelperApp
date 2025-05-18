@@ -21,8 +21,10 @@ class AuthViewModel @Inject constructor(
         }
     }
     fun signUpWithEmail(email: String, password: String) {
-        viewModelScope.launch {
-            emailSignUpUseCase(email, password)
+        if (validateCredentialsUseCase(email, password) is ValidationResult.Error) {
+            viewModelScope.launch {
+                emailSignUpUseCase(email, password)
+            }
         }
     }
     fun signInWithEmail(email: String, password: String) {
