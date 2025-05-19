@@ -3,8 +3,9 @@ package com.example.sleephelperapp.domain.usecase
 import android.util.Patterns
 
 class ValidateCredentialsUseCase {
-    operator fun invoke(email: String, password: String): ValidationResult {
+    operator fun invoke(email: String, password: String , confirmPassword: String): ValidationResult {
         return when {
+            password!=confirmPassword -> ValidationResult.Error("Password and Confirm password do not match")
             email.isBlank() -> ValidationResult.Error("Email cannot be empty")
             !isValidEmail(email) -> ValidationResult.Error("Invalid email format")
             password.isBlank() -> ValidationResult.Error("Password cannot be empty")

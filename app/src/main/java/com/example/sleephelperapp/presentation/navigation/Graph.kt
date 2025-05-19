@@ -1,9 +1,9 @@
 package com.example.sleephelperapp.presentation.navigation
 
 sealed class Graph(val route: String){
-    object Splash : Graph("splash")
-    object Login : Graph("login")
-    object Home : Graph("home")
-    object Register : Graph("register")
-    object Profile : Graph("profile")
+    data object Splash : Graph("splash")
+    data object Login : Graph("login")
+    data object Home : Graph("home")
+    data object Register : Graph("register")
+    data object Profile : Graph("profile")
 }

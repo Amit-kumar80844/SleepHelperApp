@@ -34,7 +34,7 @@ import com.example.sleephelperapp.presentation.common.Top_Bar
 
 @Composable
 fun Forget_password(navigator: NavHostController){
-
+      Forget_password_Screen(navigator)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +96,7 @@ fun Forget_password_Screen(navigator: NavHostController){
                             .fillMaxHeight(0.15f)
                             .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                         onClick = {
-                            navigator.navigate("home") // Backend login process can be added here
+                           // Backend login process can be added here
                         }
                     )
                 }else{

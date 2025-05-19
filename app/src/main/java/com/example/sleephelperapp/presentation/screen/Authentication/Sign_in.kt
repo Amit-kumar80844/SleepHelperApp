@@ -31,12 +31,12 @@ import com.example.sleephelperapp.R
 import com.example.sleephelperapp.presentation.common.*
 
 @Composable
-fun Login(navigator: NavHostController) {
-    LoginScreen(navigator)
+fun Login(navigator: NavHostController , viewModel: AuthViewModel) {
+    LoginScreen(navigator , viewModel)
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navigator: NavHostController) {
+fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -100,7 +100,7 @@ fun LoginScreen(navigator: NavHostController) {
                 onTextChange = { updatedText -> password.value = updatedText }
             )
             // Forget Password
-            Forgetpassword()
+            Forgetpassword(navigator)
             // Login Button
             CustomButton(
                 text = "Login",
@@ -115,7 +115,8 @@ fun LoginScreen(navigator: NavHostController) {
                     .fillMaxHeight(0.15f)
                     .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                 onClick = {
-
+                    viewModel.signInWithEmail(email = email.value, password = password.value , confirmPassword = password.value)
+                    // Validation and navigation logic
                     navigator.navigate("home") // Backend login process can be added here
                 }
             )
@@ -128,7 +129,8 @@ fun LoginScreen(navigator: NavHostController) {
                 fontStyle = FontStyle.Italic,
                 fontSize = 20.sp
             )
-            CustomButton(
+
+    /*        CustomButton(
                 text = "Sign in with google",
                 fontSize = 20,
                 textColor = Color.White,
@@ -141,9 +143,10 @@ fun LoginScreen(navigator: NavHostController) {
                     .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
                     .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                 onClick = {
+
                     // Validation and navigation logic
                 }
-            )
+            )*/
 
             // Already Have an Account
             NonClickableText(text = "Already have an account?")
@@ -173,7 +176,6 @@ fun ClickableText(
         fontSize = 25.sp
     )
 }
-
 @Composable
 fun NonClickableText(
     text: String = "",
@@ -191,15 +193,14 @@ fun NonClickableText(
     )
 }
 @Composable
-fun Forgetpassword(){
+fun Forgetpassword(navigator: NavHostController){
     val context = LocalContext.current
     ClickableText(
         text = "Forget Password? Click here",
         modifier = Modifier
             .clickable {
-                Toast.makeText(
-                    context, "Check your Registered Email", Toast.LENGTH_LONG
-                ).show()
+                navigator.navigate("ForgetPassword")
+                Toast.makeText(context, "Check your Registere   " + "  Email", Toast.LENGTH_LONG).show()
             }
             .fillMaxWidth(),
         color = Color(0xFF32EF06)
@@ -209,5 +210,5 @@ fun Forgetpassword(){
 @Composable
 @Preview
 fun LoginScreenPreview() {
-    LoginScreen(navigator = NavHostController(LocalContext.current))
+    LoginScreen(navigator = NavHostController(LocalContext.current) , h())
 }

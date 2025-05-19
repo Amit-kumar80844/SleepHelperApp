@@ -1,4 +1,4 @@
-package com.example.sleephelperapp.presentation.screen.Authentication
+package  com.example.sleephelperapp.presentation.screen.Authentication
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -34,18 +34,31 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.sleephelperapp.R
+import com.example.sleephelperapp.domain.repository.AuthRepository
+import com.example.sleephelperapp.domain.usecase.EmailSignInUseCase
+import com.example.sleephelperapp.domain.usecase.EmailSignUpUseCase
+import com.example.sleephelperapp.domain.usecase.GoogleSignInUseCase
+import com.example.sleephelperapp.domain.usecase.ValidateCredentialsUseCase
 import com.example.sleephelperapp.presentation.common.CustomTextField
 import com.example.sleephelperapp.presentation.common.CustomButton
 import com.example.sleephelperapp.presentation.common.Top_Bar
+/*
+import androidx.hilt.navigation.compose.hiltViewModel
+*/
 
 @Composable
-fun RegistrationScreen(navigator: NavHostController) {
-    Registation_screen(navigator = navigator) // Changed to call the new composable
+fun Registration(navigator: NavHostController ) {
+/*
+    val viewModel: AuthViewModel = hiltViewModel()
+*/
+/*
+    RegistationScreen(navigator = navigator , viewModel )
+*/
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Registation_screen(navigator: NavHostController) { // Renamed to avoid conflict and for clarity
+fun RegistationScreen(navigator: NavHostController,viewModel: AuthViewModel) { // Renamed to avoid conflict and for clarity
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -138,7 +151,7 @@ fun Registation_screen(navigator: NavHostController) { // Renamed to avoid confl
                         .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
                         .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                     onClick = {
-
+                        viewModel.signUpWithEmail(email = text.value, password = password.value , confirmPassword.value)
                         // Validation and navigation logic
                     }
                 )
@@ -151,7 +164,7 @@ fun Registation_screen(navigator: NavHostController) { // Renamed to avoid confl
                     fontStyle = FontStyle.Italic,
                     fontSize = 20.sp
                 )
-                CustomButton(
+             /*   CustomButton(
                     text = "Sign in with google",
                     fontSize = 20,
                     textColor = Color.White,
@@ -164,9 +177,11 @@ fun Registation_screen(navigator: NavHostController) { // Renamed to avoid confl
                         .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
                         .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                     onClick = {
+
+                        viewModel.signInWithGoogle("idToken")
                         // Validation and navigation logic
                     }
-                )
+                )*/
                 Text(
                     text = "Already have an account?",
                     modifier = Modifier.fillMaxWidth(),
@@ -194,9 +209,36 @@ fun Registation_screen(navigator: NavHostController) { // Renamed to avoid confl
         }
     }
 }
+fun h(): AuthViewModel{
+    val repository = object : AuthRepository {
+        override suspend fun signInWithGoogle(idToken: String): Result<Boolean> {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun signUpWithEmail(email: String, password: String): Result<Boolean> {
+            TODO("Not yet implemented")
+        }
+
+        override suspend fun signInWithEmail(email: String, password: String): Result<Boolean> {
+            TODO("Not yet implemented")
+        }
+
+        override fun isUserSignedIn(): Boolean {
+            TODO("Not yet implemented")
+        }
+    }
+   return AuthViewModel(
+        googleSignInUseCase = GoogleSignInUseCase(repository),
+        emailSignUpUseCase = EmailSignUpUseCase(repository ),
+        emailSignInUseCase = EmailSignInUseCase(repository ),
+        validateCredentialsUseCase = ValidateCredentialsUseCase())
+}
 
 @Preview(showBackground = true)
 @Composable
 fun RegistrationScreenPreview() {
-    Registation_screen(rememberNavController())
+    RegistationScreen(
+        navigator = rememberNavController(),
+        h()
+    )
 }

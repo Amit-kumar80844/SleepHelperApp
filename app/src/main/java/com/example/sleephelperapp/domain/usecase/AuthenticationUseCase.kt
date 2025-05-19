@@ -1,5 +1,6 @@
-package com.example.sleephelperapp.domain.repository
+package com.example.sleephelperapp.domain.usecase
 
+import com.example.sleephelperapp.domain.repository.AuthRepository
 import javax.inject.Inject
 
 // For Google Sign-In
