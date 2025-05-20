@@ -18,15 +18,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.sleephelperapp.presentation.screen.Authentication.AuthViewModel
 import kotlinx.coroutines.delay
 private const val SPLASH_SCREEN_DURATION_MILLIS = 2000L
 @Composable
 fun SplashScreen(navController: NavHostController) {
     // Display the splash screen
+    val viewModel: AuthViewModel = hiltViewModel()
     SplashDisplay()
     LaunchedEffect(Unit) {
         delay(SPLASH_SCREEN_DURATION_MILLIS)
+       if(viewModel.isUserLogedIn()) navController.navigate("home") else navController.navigate("login")
     }
 }
 @Composable

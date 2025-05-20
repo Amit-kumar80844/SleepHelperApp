@@ -26,13 +26,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sleephelperapp.R
 import com.example.sleephelperapp.presentation.common.*
 
 @Composable
-fun Login(navigator: NavHostController , viewModel: AuthViewModel) {
-    LoginScreen(navigator , viewModel)
+fun Login(navigator: NavHostController) {
+    LoginScreen(navigator , hiltViewModel())
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -179,7 +180,7 @@ fun ClickableText(
 @Composable
 fun NonClickableText(
     text: String = "",
-    modifier: Modifier = Modifier.fillMaxWidth(),
+    modifier: Modifier = Modifier,
     color:Color=Color(0xFFF8CA2F)
 ) {
     Text(
@@ -210,5 +211,5 @@ fun Forgetpassword(navigator: NavHostController){
 @Composable
 @Preview
 fun LoginScreenPreview() {
-    LoginScreen(navigator = NavHostController(LocalContext.current) , h())
+    LoginScreen(navigator = NavHostController(LocalContext.current) , hiltViewModel())
 }

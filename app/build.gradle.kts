@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+
 }
 android {
     namespace = "com.example.sleephelperapp"
@@ -61,6 +62,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3.v120)
     implementation(libs.material3)
+    implementation( libs.androidx.hilt.navigation.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

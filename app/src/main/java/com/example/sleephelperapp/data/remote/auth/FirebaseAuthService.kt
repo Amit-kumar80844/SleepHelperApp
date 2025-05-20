@@ -50,6 +50,8 @@ class FirebaseAuthService @Inject constructor() {
             Result.failure(e)
         }
     }
-
+    suspend fun signOut() {
+        auth.signOut()
+    }
     fun isUserSignedIn(): Boolean = auth.currentUser != null
 }

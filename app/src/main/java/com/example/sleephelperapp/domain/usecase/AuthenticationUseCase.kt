@@ -27,5 +27,16 @@ class EmailSignInUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(email: String, password: String): Result<Boolean> {
         return repository.signInWithEmail(email, password)
+
     }
 }
+
+class isUserSignedInUseCase @Inject constructor(
+    private val repository: AuthRepository
+){
+    suspend operator fun invoke():Boolean{
+        return repository.isUserSignedIn()
+    }
+}
+
+

@@ -10,6 +10,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signInWithGoogle(idToken: String): Result<Boolean> {
         return firebaseAuthService.signInWithGoogle(idToken)
     }
+
     override suspend fun signUpWithEmail(email: String, password: String): Result<Boolean> {
         return firebaseAuthService.signUpWithEmail(email, password)
     }
@@ -18,7 +19,7 @@ class AuthRepositoryImpl @Inject constructor(
         return firebaseAuthService.signInWithEmail(email, password)
     }
 
-    override fun isUserSignedIn(): Boolean {
+    override suspend fun isUserSignedIn(): Boolean {
         return firebaseAuthService.isUserSignedIn()
     }
 }

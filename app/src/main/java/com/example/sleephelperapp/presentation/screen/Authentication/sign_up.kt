@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,34 +30,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.sleephelperapp.R
-import com.example.sleephelperapp.domain.repository.AuthRepository
-import com.example.sleephelperapp.domain.usecase.EmailSignInUseCase
-import com.example.sleephelperapp.domain.usecase.EmailSignUpUseCase
-import com.example.sleephelperapp.domain.usecase.GoogleSignInUseCase
-import com.example.sleephelperapp.domain.usecase.ValidateCredentialsUseCase
 import com.example.sleephelperapp.presentation.common.CustomTextField
 import com.example.sleephelperapp.presentation.common.CustomButton
 import com.example.sleephelperapp.presentation.common.Top_Bar
-/*
-import androidx.hilt.navigation.compose.hiltViewModel
-*/
 
 @Composable
 fun Registration(navigator: NavHostController ) {
-/*
     val viewModel: AuthViewModel = hiltViewModel()
-*/
-/*
-    RegistationScreen(navigator = navigator , viewModel )
-*/
+    RegistrationScreen(navigator = navigator , viewModel )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistationScreen(navigator: NavHostController,viewModel: AuthViewModel) { // Renamed to avoid conflict and for clarity
+fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) { // Renamed to avoid conflict and for clarity
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -84,12 +72,12 @@ fun RegistationScreen(navigator: NavHostController,viewModel: AuthViewModel) { /
                     .padding(horizontal = 0.dp, vertical = 20.dp) // Adjusted vertical padding
                     .verticalScroll(rememberScrollState()) // Added for scrollability if content overflows
             ) {
-                var text = remember { mutableStateOf("Email ") }
+                val text = remember { mutableStateOf("Email ") }
                 CustomTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    leadingIcon = { null },
+                    leadingIcon = {  },
                     trailingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_email_24),
@@ -107,7 +95,7 @@ fun RegistationScreen(navigator: NavHostController,viewModel: AuthViewModel) { /
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    leadingIcon = { null },
+                    leadingIcon = {  },
                     trailingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_password_24),
@@ -125,7 +113,7 @@ fun RegistationScreen(navigator: NavHostController,viewModel: AuthViewModel) { /
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    leadingIcon = { null },
+                    leadingIcon = {  },
                     trailingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_password_24),
@@ -209,36 +197,13 @@ fun RegistationScreen(navigator: NavHostController,viewModel: AuthViewModel) { /
         }
     }
 }
-fun h(): AuthViewModel{
-    val repository = object : AuthRepository {
-        override suspend fun signInWithGoogle(idToken: String): Result<Boolean> {
-            TODO("Not yet implemented")
-        }
 
-        override suspend fun signUpWithEmail(email: String, password: String): Result<Boolean> {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun signInWithEmail(email: String, password: String): Result<Boolean> {
-            TODO("Not yet implemented")
-        }
-
-        override fun isUserSignedIn(): Boolean {
-            TODO("Not yet implemented")
-        }
-    }
-   return AuthViewModel(
-        googleSignInUseCase = GoogleSignInUseCase(repository),
-        emailSignUpUseCase = EmailSignUpUseCase(repository ),
-        emailSignInUseCase = EmailSignInUseCase(repository ),
-        validateCredentialsUseCase = ValidateCredentialsUseCase())
-}
 
 @Preview(showBackground = true)
 @Composable
 fun RegistrationScreenPreview() {
-    RegistationScreen(
+    RegistrationScreen(
         navigator = rememberNavController(),
-        h()
+        hiltViewModel()
     )
 }

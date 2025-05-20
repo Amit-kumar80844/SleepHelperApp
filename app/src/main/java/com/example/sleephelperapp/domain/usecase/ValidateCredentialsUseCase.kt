@@ -1,8 +1,9 @@
 package com.example.sleephelperapp.domain.usecase
 
 import android.util.Patterns
+import javax.inject.Inject
 
-class ValidateCredentialsUseCase {
+class ValidateCredentialsUseCase @Inject constructor(){
     operator fun invoke(email: String, password: String , confirmPassword: String): ValidationResult {
         return when {
             password!=confirmPassword -> ValidationResult.Error("Password and Confirm password do not match")
@@ -20,6 +21,6 @@ class ValidateCredentialsUseCase {
 }
 
 sealed class ValidationResult {
-    object Success : ValidationResult()
+    data object Success : ValidationResult()
     data class Error(val message: String) : ValidationResult()
 }
