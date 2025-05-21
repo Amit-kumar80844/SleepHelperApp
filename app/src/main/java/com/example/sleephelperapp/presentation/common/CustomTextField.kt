@@ -35,7 +35,7 @@ fun CustomTextField(
     onTextChange: (String) -> Unit,
     borderColor: Color = Color.Magenta,
     borderWidth: Int = 2,
-    fontSize: Int = 20,
+    fontSize: Int = 16,
     textColor: Color = Color.White,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     placeholder: String ="",
@@ -48,6 +48,7 @@ fun CustomTextField(
                 shape = RoundedCornerShape(30.dp)
             )
             .padding(horizontal = 12.dp, vertical = 10.dp)
+
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -59,6 +60,7 @@ fun CustomTextField(
             }
             TextField(
                 keyboardOptions=keyboardOptions,
+                placeholder = { Text(text = placeholder, color = Color.Black, fontSize = fontSize.sp) },
                 value = text,
                 onValueChange = onTextChange,
                 modifier = Modifier.weight(1f),
@@ -97,7 +99,7 @@ fun CustomTextField(
 @Composable
 fun CustomTextFieldPreview() {
     // To preview the TextField, you need to maintain its state (the text value)
-    var textState by remember { mutableStateOf("AMIT KUMAR") }
+    var textState by remember { mutableStateOf("") }
 
     CustomTextField(
         text = textState,
@@ -109,5 +111,6 @@ fun CustomTextFieldPreview() {
         },
         borderColor = Color.Blue,
         textColor = Color.Black,
+        placeholder = "amit"
     )
 }

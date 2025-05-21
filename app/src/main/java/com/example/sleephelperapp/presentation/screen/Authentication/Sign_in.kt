@@ -1,4 +1,4 @@
-package com.example.sleephelperapp.presentation.screen.Authentication
+package com.example.sleephelperapp.presentation.screen.Authentfication
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -33,11 +33,11 @@ import com.example.sleephelperapp.presentation.common.*
 
 @Composable
 fun Login(navigator: NavHostController) {
-    LoginScreen(navigator , hiltViewModel())
+    LoginScreen(navigator /*, hiltViewModel()*/)
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
+fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -105,7 +105,7 @@ fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
             // Login Button
             CustomButton(
                 text = "Login",
-                fontSize = 20,
+                fontSize = 16,
                 textColor = Color.White,
                 buttonColor = Color.Transparent,
                 transparency = 1f,
@@ -116,7 +116,9 @@ fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
                     .fillMaxHeight(0.15f)
                     .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                 onClick = {
+/*
                     viewModel.signInWithEmail(email = email.value, password = password.value , confirmPassword = password.value)
+*/
                     // Validation and navigation logic
                     navigator.navigate("home") // Backend login process can be added here
                 }
@@ -128,7 +130,7 @@ fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                fontSize = 20.sp
+                fontSize = 16.sp
             )
 
     /*        CustomButton(
@@ -150,7 +152,7 @@ fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
             )*/
 
             // Already Have an Account
-            NonClickableText(text = "Already have an account?")
+            NonClickableText(text = "Already have an account?", modifier = Modifier.fillMaxWidth())
             // Sign In
             ClickableText(
                 text = "Sign In",
@@ -174,7 +176,7 @@ fun ClickableText(
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold,
         fontStyle = FontStyle.Italic,
-        fontSize = 25.sp
+        fontSize = 18.sp
     )
 }
 @Composable
@@ -200,8 +202,8 @@ fun Forgetpassword(navigator: NavHostController){
         text = "Forget Password? Click here",
         modifier = Modifier
             .clickable {
+                Toast.makeText(context, "Check your Registered email " + "  Email", Toast.LENGTH_LONG).show()
                 navigator.navigate("ForgetPassword")
-                Toast.makeText(context, "Check your Registere   " + "  Email", Toast.LENGTH_LONG).show()
             }
             .fillMaxWidth(),
         color = Color(0xFF32EF06)
@@ -211,5 +213,5 @@ fun Forgetpassword(navigator: NavHostController){
 @Composable
 @Preview
 fun LoginScreenPreview() {
-    LoginScreen(navigator = NavHostController(LocalContext.current) , hiltViewModel())
+    LoginScreen(navigator = NavHostController(LocalContext.current) ,/* hiltViewModel()*/)
 }

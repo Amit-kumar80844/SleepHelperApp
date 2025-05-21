@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.sleephelperapp.presentation.common.SplashScreen
-import com.example.sleephelperapp.presentation.screen.Authentication.Login
+import com.example.sleephelperapp.presentation.screen.Authentfication.Login
 import com.example.sleephelperapp.presentation.screen.Authentication.Registration
 
 @Composable

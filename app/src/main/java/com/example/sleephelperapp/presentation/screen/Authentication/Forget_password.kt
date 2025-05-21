@@ -31,6 +31,7 @@ import com.example.sleephelperapp.R
 import com.example.sleephelperapp.presentation.common.CustomButton
 import com.example.sleephelperapp.presentation.common.CustomTextField
 import com.example.sleephelperapp.presentation.common.Top_Bar
+import com.example.sleephelperapp.presentation.screen.Authentfication.NonClickableText
 
 @Composable
 fun Forget_password(navigator: NavHostController){

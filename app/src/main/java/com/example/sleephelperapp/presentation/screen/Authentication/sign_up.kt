@@ -1,5 +1,6 @@
 package  com.example.sleephelperapp.presentation.screen.Authentication
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,11 +15,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +40,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sleephelperapp.R
 import com.example.sleephelperapp.presentation.common.CustomTextField
 import com.example.sleephelperapp.presentation.common.CustomButton
+import com.example.sleephelperapp.presentation.common.IndeterminateCircularIndicator
 import com.example.sleephelperapp.presentation.common.Top_Bar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun Registration(navigator: NavHostController ) {
@@ -47,6 +56,8 @@ fun Registration(navigator: NavHostController ) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) { // Renamed to avoid conflict and for clarity
+    val isLoading = remember { mutableStateOf(false) }
+    val authState = viewModel.authUiState.value
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -58,17 +69,21 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                 .fillMaxSize(),
             Alignment.Center
         ) {
+
             Image(
                 painter = painterResource(id = R.drawable.registerbackgroundimage),
                 contentDescription = "Background Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
+      if(isLoading.value){
+          IndeterminateCircularIndicator(isLoading = isLoading.value)
+      }else
             // Apply innerPadding to the Column to prevent content from overlapping with TopAppBar
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(innerPadding) // Apply padding here
+                    .padding(innerPadding)
                     .padding(horizontal = 0.dp, vertical = 20.dp) // Adjusted vertical padding
                     .verticalScroll(rememberScrollState()) // Added for scrollability if content overflows
             ) {
@@ -139,8 +154,23 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                         .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
                         .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                     onClick = {
-                        viewModel.signUpWithEmail(email = text.value, password = password.value , confirmPassword.value)
-                        // Validation and navigation logic
+                        viewModel.signUpWithEmail(text.value, password.value, confirmPassword.value)
+                        LaunchedEffect(authState) {
+                            when (authState) {
+                                is AuthUiState.Success -> {
+                                    navigator.navigate("home") // Adjust destination
+                                    viewModel.resetState()
+                                }
+                                is AuthUiState.Error -> {
+                                    isLoading.value = false
+                                    viewModel.resetState()
+                                }
+                                is AuthUiState.Loading -> {
+                                    isLoading.value = true
+                                }
+                                else -> Unit
+                            }
+                        }
                     }
                 )
                 Text(
@@ -150,7 +180,7 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontStyle = FontStyle.Italic,
-                    fontSize = 20.sp
+                    fontSize = 16.sp
                 )
              /*   CustomButton(
                     text = "Sign in with google",
@@ -191,7 +221,7 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     fontStyle = FontStyle.Italic,
-                    fontSize = 25.sp
+                    fontSize = 20.sp
                 )
             }
         }

@@ -63,7 +63,7 @@ dependencies {
     implementation(libs.androidx.material3.v120)
     implementation(libs.material3)
     implementation( libs.androidx.hilt.navigation.compose)
-
+    implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
