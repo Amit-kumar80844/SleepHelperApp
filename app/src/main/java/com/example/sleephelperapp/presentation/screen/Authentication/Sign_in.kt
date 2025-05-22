@@ -1,5 +1,6 @@
 package com.example.sleephelperapp.presentation.screen.Authentfication
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -152,10 +153,10 @@ fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
             )*/
 
             // Already Have an Account
-            NonClickableText(text = "Already have an account?", modifier = Modifier.fillMaxWidth())
+            NonClickableText(text = "Create a new account?", modifier = Modifier.fillMaxWidth())
             // Sign In
             ClickableText(
-                text = "Sign In",
+                text = "Sign Up",
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { navigator.navigate("Register") }
@@ -169,6 +170,7 @@ fun ClickableText(
     modifier: Modifier = Modifier.fillMaxWidth(),
     color: Color = Color(0xFF09D9F1),
 ) {
+    Log.d("ClickableText", "Text: $text")
     Text(
         text = text,
         modifier = modifier,

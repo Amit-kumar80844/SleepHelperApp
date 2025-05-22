@@ -60,7 +60,7 @@ fun CustomTextField(
             }
             TextField(
                 keyboardOptions=keyboardOptions,
-                placeholder = { Text(text = placeholder, color = Color.Black, fontSize = fontSize.sp) },
+                placeholder = { Text(text = placeholder, color = textColor, fontSize = fontSize.sp) },
                 value = text,
                 onValueChange = onTextChange,
                 modifier = Modifier.weight(1f),

@@ -19,12 +19,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class AuthUiState {
-    object Idle : AuthUiState()
-    object Loading : AuthUiState()
-    object Success : AuthUiState()
+    data object Idle : AuthUiState()
+    data object Loading : AuthUiState()
+    data object Success : AuthUiState()
     data class Error(val message: String) : AuthUiState()
 }
-
 
 @HiltViewModel
 open class AuthViewModel @Inject constructor(
@@ -34,7 +33,7 @@ open class AuthViewModel @Inject constructor(
     val isUserSignedInUseCase: isUserSignedInUseCase,
     val validateCredentialsUseCase: ValidateCredentialsUseCase,
 ) : ViewModel() {
-    fun signInWithGoogle(idToken: String) {
+/*    fun signInWithGoogle(idToken: String) {
         Log.d("AuthViewModel", "Attempting Google Sign-In")
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         FirebaseAuth.getInstance().signInWithCredential(credential)
@@ -48,8 +47,7 @@ open class AuthViewModel @Inject constructor(
                     Log.d("AuthViewModel", "Google Sign-In failed: ${it.exception}")
                 }
             }
-
-    }
+    }*/
     var authUiState = mutableStateOf<AuthUiState>(AuthUiState.Idle)
     fun signUpWithEmail(email: String, password: String , confirmPassword: String) {
         when(val result = validateCredentialsUseCase(email, password , confirmPassword)) {
@@ -75,6 +73,7 @@ open class AuthViewModel @Inject constructor(
     fun signInWithEmail(email: String, password: String) {
             Log.d("AuthViewModel", "Email Sign-In validation successful")
             viewModelScope.launch {
+                Log.d("AuthViewModel", "Attempting Email Sign-In")
                 emailSignInUseCase(email, password)
             }
     }

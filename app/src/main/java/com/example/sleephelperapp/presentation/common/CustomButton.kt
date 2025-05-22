@@ -30,12 +30,11 @@ fun CustomButton(
     modifier: Modifier = Modifier.fillMaxWidth()
         .border(borderWidth, borderColor, RoundedCornerShape(roundedCorner)),
     transparency: Float = 0.5f,
-    onClick: @Composable () -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
-
     Button(
-        onClick ={},
+        onClick =onClick,
         shape = RoundedCornerShape(roundedCorner),
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor.copy(alpha = 1f-transparency)), // Apply transparency
         modifier = modifier

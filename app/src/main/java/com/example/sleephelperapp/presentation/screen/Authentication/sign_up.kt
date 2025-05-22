@@ -20,13 +20,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -56,8 +59,27 @@ fun Registration(navigator: NavHostController ) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) { // Renamed to avoid conflict and for clarity
-    val isLoading = remember { mutableStateOf(false) }
     val authState = viewModel.authUiState.value
+    val context = LocalContext.current
+    var validationMessage by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    LaunchedEffect(authState) {
+        when (authState){
+            is AuthUiState.Success->{
+                Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                navigator.navigate("home")
+                viewModel.resetState()
+            }
+            is AuthUiState.Error -> {
+                validationMessage = authState.message
+                Toast.makeText(context, validationMessage, Toast.LENGTH_SHORT).show()
+                viewModel.resetState()
+            }
+            else->Unit
+        }
+    }
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -69,16 +91,15 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                 .fillMaxSize(),
             Alignment.Center
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.registerbackgroundimage),
                 contentDescription = "Background Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-      if(isLoading.value){
-          IndeterminateCircularIndicator(isLoading = isLoading.value)
-      }else
+      if(authState is AuthUiState.Loading){
+          IndeterminateCircularIndicator(isLoading = true)
+      }else{
             // Apply innerPadding to the Column to prevent content from overlapping with TopAppBar
             Column(
                 modifier = Modifier
@@ -87,7 +108,6 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                     .padding(horizontal = 0.dp, vertical = 20.dp) // Adjusted vertical padding
                     .verticalScroll(rememberScrollState()) // Added for scrollability if content overflows
             ) {
-                val text = remember { mutableStateOf("Email ") }
                 CustomTextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -102,10 +122,10 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                     },
                     paddingLeadingIconEnd = 10.dp,
                     paddingTrailingIconStart = 10.dp,
-                    text = text.value,
-                    onTextChange = { updatedText -> text.value = updatedText }
+                    text = email.value,
+                    placeholder = "Enter your email",
+                    onTextChange = { updatedText -> email.value = updatedText }
                 )
-                val password = remember { mutableStateOf("Password") }
                 CustomTextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,9 +141,9 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                     paddingLeadingIconEnd = 10.dp,
                     paddingTrailingIconStart = 10.dp,
                     text = password.value,
+                    placeholder  = "Enter your password",
                     onTextChange = { updatedText -> password.value = updatedText }
                 )
-                val confirmPassword = remember { mutableStateOf("Confirm Password") }
                 CustomTextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -138,8 +158,9 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                     },
                     paddingLeadingIconEnd = 10.dp,
                     paddingTrailingIconStart = 10.dp,
-                    text = confirmPassword.value,
-                    onTextChange = { updatedText -> confirmPassword.value = updatedText }
+                    text = confirmPassword,
+                    placeholder = "Confirm your password",
+                    onTextChange = { updatedText -> confirmPassword = updatedText }
                 )
                 CustomButton(
                     text = "Register",
@@ -154,23 +175,8 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                         .fillMaxHeight(0.15f) // Consider using fixed height or weight for better responsiveness
                         .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                     onClick = {
-                        viewModel.signUpWithEmail(text.value, password.value, confirmPassword.value)
-                        LaunchedEffect(authState) {
-                            when (authState) {
-                                is AuthUiState.Success -> {
-                                    navigator.navigate("home") // Adjust destination
-                                    viewModel.resetState()
-                                }
-                                is AuthUiState.Error -> {
-                                    isLoading.value = false
-                                    viewModel.resetState()
-                                }
-                                is AuthUiState.Loading -> {
-                                    isLoading.value = true
-                                }
-                                else -> Unit
-                            }
-                        }
+                        print("Registration button clicked")
+                        viewModel.signUpWithEmail(email.value, password.value, confirmPassword)
                     }
                 )
                 Text(
@@ -224,6 +230,7 @@ fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) {
                     fontSize = 20.sp
                 )
             }
+        }
         }
     }
 }
