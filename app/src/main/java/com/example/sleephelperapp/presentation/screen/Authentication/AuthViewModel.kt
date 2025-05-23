@@ -24,6 +24,14 @@ sealed class AuthUiState {
     data object Success : AuthUiState()
     data class Error(val message: String) : AuthUiState()
 }
+/// next thing to update leather
+/*
+sealed class Authdata{
+    data object email : Authdata()
+    data object password : Authdata()
+    data object confirmPassword : Authdata()
+}
+*/
 
 @HiltViewModel
 open class AuthViewModel @Inject constructor(
@@ -71,11 +79,23 @@ open class AuthViewModel @Inject constructor(
         authUiState.value = AuthUiState.Idle
     }
     fun signInWithEmail(email: String, password: String) {
-            Log.d("AuthViewModel", "Email Sign-In validation successful")
-            viewModelScope.launch {
-                Log.d("AuthViewModel", "Attempting Email Sign-In")
-                emailSignInUseCase(email, password)
+        when(val result = validateCredentialsUseCase(email, password , password)){
+            is ValidationResult.Success -> {
+                authUiState.value = AuthUiState.Loading
+                Log.d("AuthViewModel", "Email Sign-In validation successful")
+                viewModelScope.launch {
+                    try{
+                        emailSignInUseCase(email, password)
+                        authUiState.value = AuthUiState.Success
+                    }catch (e : Exception){
+                        authUiState.value = AuthUiState.Error(e.message ?: "Unknown error")
+                    }
+                }
             }
+            is ValidationResult.Error -> {
+                authUiState.value = AuthUiState.Error(result.message)
+            }
+        }
     }
 
     fun isUserLogedIn(): Boolean {

@@ -55,7 +55,6 @@ fun Registration(navigator: NavHostController ) {
     val viewModel: AuthViewModel = hiltViewModel()
     RegistrationScreen(navigator = navigator , viewModel )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(navigator: NavHostController, viewModel: AuthViewModel) { // Renamed to avoid conflict and for clarity

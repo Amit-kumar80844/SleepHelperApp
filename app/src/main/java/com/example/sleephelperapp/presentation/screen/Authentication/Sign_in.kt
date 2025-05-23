@@ -13,8 +13,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,14 +34,36 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sleephelperapp.R
 import com.example.sleephelperapp.presentation.common.*
+import com.example.sleephelperapp.presentation.screen.Authentication.AuthUiState
+import com.example.sleephelperapp.presentation.screen.Authentication.AuthViewModel
 
 @Composable
 fun Login(navigator: NavHostController) {
-    LoginScreen(navigator /*, hiltViewModel()*/)
+    LoginScreen(navigator , hiltViewModel())
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
+fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val context = LocalContext.current
+    var validationMessage by remember { mutableStateOf("") }
+    val authState = viewModel.authUiState.value
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthUiState.Success -> {
+                Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                navigator.navigate("home")
+                viewModel.resetState()
+            }
+            is AuthUiState.Error -> {
+                validationMessage = authState.message
+                Toast.makeText(context, validationMessage, Toast.LENGTH_SHORT).show()
+                viewModel.resetState()
+            }
+            else -> Unit
+        }
+    }
     Scaffold(
         topBar = {
             Top_Bar(navigator,"Create Account")
@@ -58,13 +83,15 @@ fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
+      if(authState is AuthUiState.Loading){
+           IndeterminateCircularIndicator(true)
+      }else
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 80.dp)
         ) {
             // Email Input Field
-            val email = remember { mutableStateOf("Email") }
             CustomTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,10 +107,10 @@ fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
                 paddingLeadingIconEnd = 10.dp,
                 paddingTrailingIconStart = 10.dp,
                 text = email.value,
+                placeholder = "Enter your email",
                 onTextChange = { updatedText -> email.value = updatedText }
             )
             // Password Input Field
-            val password = remember { mutableStateOf("Password") }
             CustomTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,6 +126,7 @@ fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
                 paddingLeadingIconEnd = 10.dp,
                 paddingTrailingIconStart = 10.dp,
                 text = password.value,
+                placeholder = "Enter your password",
                 onTextChange = { updatedText -> password.value = updatedText }
             )
             // Forget Password
@@ -117,11 +145,7 @@ fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
                     .fillMaxHeight(0.15f)
                     .border(1.dp, Color.Magenta, RoundedCornerShape(50)),
                 onClick = {
-/*
-                    viewModel.signInWithEmail(email = email.value, password = password.value , confirmPassword = password.value)
-*/
-                    // Validation and navigation logic
-                    navigator.navigate("home") // Backend login process can be added here
+                    viewModel.signInWithEmail(email = email.value, password = password.value)
                 }
             )
             Text(
@@ -151,7 +175,6 @@ fun LoginScreen(navigator: NavHostController /*,  viewModel: AuthViewModel*/) {
                     // Validation and navigation logic
                 }
             )*/
-
             // Already Have an Account
             NonClickableText(text = "Create a new account?", modifier = Modifier.fillMaxWidth())
             // Sign In
@@ -215,5 +238,5 @@ fun Forgetpassword(navigator: NavHostController){
 @Composable
 @Preview
 fun LoginScreenPreview() {
-    LoginScreen(navigator = NavHostController(LocalContext.current) ,/* hiltViewModel()*/)
+    LoginScreen(navigator = NavHostController(LocalContext.current) , hiltViewModel())
 }
