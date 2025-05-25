@@ -44,10 +44,12 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom.v20250501))
     implementation(libs.hilt.android)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.ads.mobile.sdk)
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.core.ktx)
