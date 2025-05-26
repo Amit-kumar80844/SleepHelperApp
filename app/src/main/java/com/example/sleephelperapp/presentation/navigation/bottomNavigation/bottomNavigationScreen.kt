@@ -1,35 +1,41 @@
 package com.example.sleephelperapp.presentation.navigation.bottomNavigation
 
-import com.example.sleephelperapp.R
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class bottomNavigationScreen(
     val route: String,
     val title: String,
-    val icon: Int
+    val icon: ImageVector
 ){
-    object Analysis : bottomNavigationScreen(
+    data object Analysis : bottomNavigationScreen(
         route = "Analysis",
         title = "analysis",
-        icon = R.drawable.reporticon
+        icon = Icons.Default.Favorite
     )
-    object Sound: bottomNavigationScreen(
+    data object Sound: bottomNavigationScreen(
         route = "Sound",
         title = "sound",
-        icon = R.drawable.relaxsoundicon
+        icon = Icons.Default.PlayArrow
     )
-    object Schedule : bottomNavigationScreen(
+    data object Schedule : bottomNavigationScreen(
         route = "Schedule",
         title = "schedule",
-        icon = R.drawable.scheduleimage
+        icon = Icons.Default.Settings
     )
-    object Read : bottomNavigationScreen(
+    data object Read : bottomNavigationScreen(
         route = "Read",
         title = "read",
-        icon = R.drawable.storiesicon
+        icon = Icons.Default.Create
     )
-    object Profile : bottomNavigationScreen(
+    data object Profile : bottomNavigationScreen(
         route = "Profile",
         title = "profile",
-        icon = R.drawable.profileicon
+        icon =Icons.Default.AccountCircle
     )
 }

@@ -30,7 +30,8 @@ fun SplashScreen(navController: NavHostController) {
     SplashDisplay()
     LaunchedEffect(Unit) {
         delay(SPLASH_SCREEN_DURATION_MILLIS)
-       if(viewModel.isUserLogedIn()) navController.navigate("home") else navController.navigate("login")
+        navController.navigate("home")
+      /* if(viewModel.isUserLogedIn()) navController.navigate("home") else navController.navigate("login")*/
     }
 }
 @Composable
