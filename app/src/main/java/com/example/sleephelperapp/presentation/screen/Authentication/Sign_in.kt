@@ -7,9 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +39,7 @@ import com.example.sleephelperapp.presentation.screen.Authentication.AuthViewMod
 fun Login(navigator: NavHostController) {
     LoginScreen(navigator , hiltViewModel())
 }
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
     val email = remember { mutableStateOf("") }
