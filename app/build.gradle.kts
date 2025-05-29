@@ -44,6 +44,10 @@ android {
 }
 
 dependencies {
+    implementation (libs.androidx.room.runtime)
+    implementation (libs.androidx.room.ktx)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.datastore.preferences)
     implementation(platform(libs.androidx.compose.bom.v20250501))
     implementation(libs.hilt.android)
     implementation(libs.androidx.credentials)
@@ -73,4 +77,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }
