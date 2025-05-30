@@ -6,16 +6,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SleepScheduleDao {
-
     @Query("SELECT * FROM sleep_schedule LIMIT 1")
     fun getSchedule(): Flow<SleepScheduleEntity?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSchedule(schedule: SleepScheduleEntity)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateSchedule(schedule: SleepScheduleEntity)
-
-    @Delete
-    suspend fun deleteSchedule(schedule: SleepScheduleEntity)
 }

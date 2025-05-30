@@ -10,13 +10,12 @@ import com.example.sleephelperapp.data.model.SleepScheduleEntity
 @Database(entities = [SleepScheduleEntity::class], version = 1)
 abstract class SleepDatabase : RoomDatabase() {
     abstract fun sleepScheduleDao(): SleepScheduleDao
-
     companion object {
         @Volatile
         private var INSTANCE: SleepDatabase? = null
 
         fun getDatabase(context: Context): SleepDatabase {
-            if(INSTANCE != null) return INSTANCE!!
+          /*  if(INSTANCE != null) return INSTANCE!!*/
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,

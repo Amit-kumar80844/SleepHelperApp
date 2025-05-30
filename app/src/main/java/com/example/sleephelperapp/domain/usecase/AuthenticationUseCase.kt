@@ -16,7 +16,6 @@ class EmailSignUpUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     suspend operator fun invoke(email: String, password: String): Result<Boolean> {
-        // Add validation logic here if needed
         return repository.signUpWithEmail(email, password)
     }
 }
@@ -27,7 +26,6 @@ class EmailSignInUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(email: String, password: String): Result<Boolean> {
         return repository.signInWithEmail(email, password)
-
     }
 }
 

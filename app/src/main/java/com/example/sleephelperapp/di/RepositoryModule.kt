@@ -1,6 +1,8 @@
 package com.example.sleephelperapp.di
 
-import com.example.sleephelperapp.data.repository.AuthRepositoryImpl // Assuming this is your implementation
+import com.example.sleephelperapp.data.local.dao.SleepScheduleDao
+import com.example.sleephelperapp.data.repository.AuthRepositoryImpl
+import com.example.sleephelperapp.data.repository.SleepScheduleRepositoryImpl
 import com.example.sleephelperapp.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
@@ -9,12 +11,17 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class) // Or another appropriate component
+@InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
-
     @Binds
-    @Singleton // If AuthRepository should be a singleton
+    @Singleton
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSleepRepository(
+        sleepRepositoryImpl: SleepScheduleRepositoryImpl
+    ): SleepScheduleDao
 }
