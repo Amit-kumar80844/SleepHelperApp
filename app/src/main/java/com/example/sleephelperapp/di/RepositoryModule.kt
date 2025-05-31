@@ -1,9 +1,9 @@
 package com.example.sleephelperapp.di
 
-import com.example.sleephelperapp.data.local.dao.SleepScheduleDao
 import com.example.sleephelperapp.data.repository.AuthRepositoryImpl
 import com.example.sleephelperapp.data.repository.SleepScheduleRepositoryImpl
 import com.example.sleephelperapp.domain.repository.AuthRepository
+import com.example.sleephelperapp.domain.repository.SleepScheduleRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -23,5 +23,5 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindSleepRepository(
         sleepRepositoryImpl: SleepScheduleRepositoryImpl
-    ): SleepScheduleDao
+    ): SleepScheduleRepository
 }
