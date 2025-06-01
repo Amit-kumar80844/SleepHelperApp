@@ -11,6 +11,7 @@ import com.example.sleephelperapp.presentation.screen.fortest.screenB
 import com.example.sleephelperapp.presentation.screen.fortest.screenC
 import com.example.sleephelperapp.presentation.screen.fortest.screenD
 import com.example.sleephelperapp.presentation.screen.fortest.screenE
+import com.example.sleephelperapp.presentation.screen.schedule.SleepSchedule
 
 @Composable
 fun BottomNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -20,7 +21,7 @@ fun BottomNavGraph(navController: NavHostController, modifier: Modifier = Modifi
         modifier = modifier
     ) {
         composable(Graph.Analysis.route) {
-            screenA(navController)
+            SleepSchedule(navController)
         }
         composable(Graph.Read.route) {
             screenB(navController)

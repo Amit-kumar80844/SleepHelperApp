@@ -1,6 +1,8 @@
 package com.example.sleephelperapp.presentation.screen.schedule
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
@@ -30,8 +32,42 @@ class SleepScheduleViewModel @Inject constructor(
     var notificationOffEnabled by mutableStateOf(false)
     var doNotDisturbEnabled by mutableStateOf(false)
     var flightModeEnabled by mutableStateOf(false)
-    private val _sleepSchedule = MutableStateFlow<SleepScheduleEntity?>(null)
-    val sleepSchedule: StateFlow<SleepScheduleEntity?> = _sleepSchedule.asStateFlow()
+
+    private val _wakeUpTime = mutableStateOf("07:00 AM")
+    val wakeUpTime: State<String> = _wakeUpTime
+
+    private val _sleepTime = mutableStateOf("11:00 PM")
+    val sleepTime: State<String> = _sleepTime
+
+    private val _showWakeUpTimePicker = mutableStateOf(false)
+    val showWakeUpTimePicker: State<Boolean> = _showWakeUpTimePicker
+
+    private val _showSleepTimePicker = mutableStateOf(false)
+    val showSleepTimePicker: State<Boolean> = _showSleepTimePicker
+
+    fun updateWakeUpTime(time: String) {
+        _wakeUpTime.value = time
+    }
+
+    fun updateSleepTime(time: String) {
+        _sleepTime.value = time
+    }
+
+    fun showWakeUpTimePicker() {
+        _showWakeUpTimePicker.value = true
+    }
+
+    fun hideWakeUpTimePicker() {
+        _showWakeUpTimePicker.value = false
+    }
+
+    fun showSleepTimePicker() {
+        _showSleepTimePicker.value = true
+    }
+
+    fun hideSleepTimePicker() {
+        _showSleepTimePicker.value = false
+    }
     
     fun toggleWakeUpAlarm() {
         wakeUpAlarmEnabled = !wakeUpAlarmEnabled

@@ -71,7 +71,7 @@ fun LoginScreen(navigator: NavHostController ,  viewModel: AuthViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopStart
     )
     {
         // Background Image

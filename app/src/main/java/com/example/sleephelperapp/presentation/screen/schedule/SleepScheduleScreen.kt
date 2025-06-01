@@ -1,6 +1,7 @@
 package com.example.sleephelperapp.presentation.screen.schedule
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -25,15 +25,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sleephelperapp.R
-import com.example.sleephelperapp.presentation.common.Top_Bar
+import com.example.sleephelperapp.presentation.common.TimePickerDialog
+import com.example.sleephelperapp.presentation.theme.topBarColor
 
 @Composable
 fun SleepSchedule(navigator: NavHostController) {
@@ -42,25 +41,32 @@ fun SleepSchedule(navigator: NavHostController) {
 
 @Composable
 fun SleepScheduleScreen(navigator: NavHostController, viewModel: SleepScheduleViewModel) {
-    Scaffold(
-        topBar = { Top_Bar(navigator, "Schedule") },
-        containerColor = Color.Transparent
-    ) { innerPadding ->
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(topBarColor.value))
+    ) {
+        Text(
+            text = "Schedule",
+            color = Color.White,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(16.dp)
+        )
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF1C1B2A))
                 .verticalScroll(rememberScrollState())
-                .padding(innerPadding),
+                .background(Color(0xFF000000))
+                .padding(horizontal = 16.dp),
             contentAlignment = Alignment.TopStart
         ) {
-            SleepScreenContent(viewModel)
+            SleepScreen(viewModel)
         }
     }
 }
 
 @Composable
-fun SleepScreenContent(viewModel: SleepScheduleViewModel) {
+fun SleepScreen(viewModel: SleepScheduleViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,23 +77,32 @@ fun SleepScreenContent(viewModel: SleepScheduleViewModel) {
             AlarmToggleRow(
                 iconResId = R.drawable.outline_wb_sunny_24,
                 title = "Wake up Alarm",
-                time = "07:00 AM", // Placeholder time
+                time = viewModel.wakeUpTime.value,
                 checked = viewModel.wakeUpAlarmEnabled,
-                onCheckedChange = { viewModel.toggleWakeUpAlarm() }
+                onCheckedChange = { viewModel.toggleWakeUpAlarm() },
+                onTimeClick = {
+                    viewModel.showWakeUpTimePicker()
+                }
             )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
         CardSection {
             AlarmToggleRow(
-                iconResId = R.drawable.outline_moon_stars_24, // Moon and stars icon
+                iconResId = R.drawable.outline_moon_stars_24,
                 title = "Sleep time Alarm",
-                time = "11:00 PM",
+                time = viewModel.sleepTime.value,
                 checked = viewModel.sleepTimeAlarmEnabled,
-                onCheckedChange = { viewModel.toggleSleepTimeAlarm() }
+                onCheckedChange = { viewModel.toggleSleepTimeAlarm() },
+                onTimeClick = {
+                     viewModel.showSleepTimePicker()
+                }
             )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
-        // Scheduler Section
+
         CardSection {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -102,59 +117,55 @@ fun SleepScreenContent(viewModel: SleepScheduleViewModel) {
                     modifier = Modifier.padding(vertical = 4.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.outline_timer_24), // Timer icon
+                        painter = painterResource(id = R.drawable.outline_timer_24),
                         contentDescription = "Sleep time duration",
                         tint = Color.White,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Sleep time  11:00 PM - 07:00 AM",
+                        text = "Sleep time  ${viewModel.sleepTime.value} - ${viewModel.wakeUpTime.value}",
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Black and White Screen toggle
+                // Scheduler toggles remain the same
                 SchedulerToggleRow(
-                    iconResId = R.drawable.outline_eyeglasses_24, // Eyeglasses icon
+                    iconResId = R.drawable.outline_eyeglasses_24,
                     text = "Black and White Screen",
                     checked = viewModel.blackAndWhiteScreenEnabled,
                     onCheckedChange = { viewModel.toggleBlackAndWhiteScreen() }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Eye Comfort toggle
                 SchedulerToggleRow(
-                    iconResId = R.drawable.outline_eyeglasses_24, // Reusing eyeglasses icon, consider a different one if available
+                    iconResId = R.drawable.outline_eyeglasses_24,
                     text = "Eye Comfort",
                     checked = viewModel.eyeComfortEnabled,
                     onCheckedChange = { viewModel.toggleEyeComfort() }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Notification Off toggle
                 SchedulerToggleRow(
-                    iconResId = R.drawable.outline_notifications_off_24, // Notification off icon
+                    iconResId = R.drawable.outline_notifications_off_24,
                     text = "Notification Off",
                     checked = viewModel.notificationOffEnabled,
                     onCheckedChange = { viewModel.toggleNotificationOff() }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Do Not Disturb toggle
                 SchedulerToggleRow(
-                    iconResId = R.drawable.outline_do_not_disturb_on_24, // Do not disturb icon
+                    iconResId = R.drawable.outline_do_not_disturb_on_24,
                     text = "Do not Disturb",
                     checked = viewModel.doNotDisturbEnabled,
                     onCheckedChange = { viewModel.toggleDoNotDisturb() }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Flight Mode toggle
                 SchedulerToggleRow(
-                    iconResId = R.drawable.outline_flights_and_hotels_24, // Flight mode icon
+                    iconResId = R.drawable.outline_flights_and_hotels_24,
                     text = "Flight Mode",
                     checked = viewModel.flightModeEnabled,
                     onCheckedChange = { viewModel.toggleFlightMode() }
@@ -163,8 +174,32 @@ fun SleepScreenContent(viewModel: SleepScheduleViewModel) {
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
-}
 
+    // Time Picker Dialogs
+    if (viewModel.showWakeUpTimePicker.value) {
+        TimePickerDialog(
+            onTimeSelected = { selectedTime ->
+                viewModel.updateWakeUpTime(selectedTime.formattedTime)
+                viewModel.hideWakeUpTimePicker()
+            },
+            onDismiss = {
+                viewModel.hideWakeUpTimePicker()
+            }
+        )
+    }
+
+    if (viewModel.showSleepTimePicker.value) {
+        TimePickerDialog(
+            onTimeSelected = { selectedTime ->
+                viewModel.updateSleepTime(selectedTime.formattedTime)
+                viewModel.hideSleepTimePicker()
+           },
+            onDismiss = {
+                viewModel.hideSleepTimePicker()
+            }
+        )
+    }
+}
 
 @Composable
 fun AlarmToggleRow(
@@ -172,7 +207,8 @@ fun AlarmToggleRow(
     title: String,
     time: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    onTimeClick: () -> Unit // New parameter for time click
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -182,19 +218,23 @@ fun AlarmToggleRow(
             painter = painterResource(id = iconResId),
             contentDescription = title,
             tint = Color.White,
-            modifier = Modifier.size(28.dp) // Slightly larger icon
+            modifier = Modifier.size(28.dp)
         )
-        Spacer(modifier = Modifier.width(12.dp)) // Increased spacing
-        Column(modifier = Modifier.weight(1f)) {
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .clickable { onTimeClick() } // Make time clickable
+        ) {
             Text(
                 text = title,
                 color = Color.White,
-                style = MaterialTheme.typography.bodyLarge // Larger text for titles
+                style = MaterialTheme.typography.bodyLarge
             )
             Text(
                 text = time,
                 color = Color.White,
-                fontSize = 22.sp, // Larger font for time
+                fontSize = 22.sp,
                 style = MaterialTheme.typography.headlineSmall
             )
         }
@@ -202,7 +242,7 @@ fun AlarmToggleRow(
             checked = checked,
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = MaterialTheme.colorScheme.primary, // Use primary color from theme
+                checkedThumbColor = MaterialTheme.colorScheme.primary,
                 checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 uncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
@@ -211,13 +251,6 @@ fun AlarmToggleRow(
     }
 }
 
-/**
- * A reusable composable for a scheduler setting toggle row.
- * @param iconResId Resource ID for the leading icon.
- * @param text The text label for the setting.
- * @param checked The current checked state of the switch.
- * @param onCheckedChange Lambda to be invoked when the switch state changes.
- */
 @Composable
 fun SchedulerToggleRow(
     iconResId: Int,
@@ -239,7 +272,7 @@ fun SchedulerToggleRow(
         Text(
             text = text,
             color = Color.White,
-            modifier = Modifier.weight(1f), // Occupy available space
+            modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyMedium
         )
         Switch(
@@ -259,21 +292,12 @@ fun SchedulerToggleRow(
 fun CardSection(content: @Composable () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp), // Rounded corners
-        color = Color(0xFF2A293D), // Slightly lighter dark background for the card
-        shadowElevation = 4.dp // Add a subtle shadow
+        shape = RoundedCornerShape(12.dp),
+        color = Color(0xFF2A293D),
+        shadowElevation = 4.dp
     ) {
-        Column(modifier = Modifier.padding(16.dp)) { // Padding inside the card
+        Column(modifier = Modifier.padding(16.dp)) {
             content()
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SleepScheduleScreenPreview() {
-    val dummyNavigator = NavHostController(LocalContext.current)
-    MaterialTheme {
-        SleepSchedule(navigator = dummyNavigator)
     }
 }
