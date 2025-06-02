@@ -1,7 +1,9 @@
 package com.example.sleephelperapp.presentation.screen.schedule
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sleephelperapp.R
+import com.example.sleephelperapp.presentation.common.SchedulerToggleRow
 import com.example.sleephelperapp.presentation.common.TimePickerDialog
 import com.example.sleephelperapp.presentation.theme.topBarColor
 
@@ -123,11 +127,30 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        ScheduleTimePicker(
+                            label = "Start Time",
+                            time = "08:00 AM",
+                            onTimeClick = {viewModel.showWakeUpTimePicker()}
+                        )
+                        ScheduleTimePicker(
+                            label = "End Time",
+                            time = "10:00 AM",
+                            onTimeClick = {viewModel.showWakeUpTimePicker() }
+                        )
+                    }
+
+                    /* ScheduleTimePicker("10:10 AM",{viewModel.showSleepTimePicker()})*/
+                    /*Text(
                         text = "Sleep time  ${viewModel.sleepTime.value} - ${viewModel.wakeUpTime.value}",
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
-                    )
+                    )*/
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -208,7 +231,7 @@ fun AlarmToggleRow(
     time: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    onTimeClick: () -> Unit // New parameter for time click
+    onTimeClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -224,7 +247,7 @@ fun AlarmToggleRow(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onTimeClick() } // Make time clickable
+                .clickable { onTimeClick() }
         ) {
             Text(
                 text = title,
@@ -252,41 +275,38 @@ fun AlarmToggleRow(
 }
 
 @Composable
-fun SchedulerToggleRow(
-    iconResId: Int,
-    text: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+fun ScheduleTimePicker(
+    modifier: Modifier = Modifier,
+    label: String,
+    time: String,
+    onTimeClick: () -> Unit
 ) {
+    Log.d("ScheduleTimePicker", "Time: $time")
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onTimeClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = iconResId),
-            contentDescription = text,
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = text,
-            color = Color.White,
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                color = Color.White,
+                fontSize = 16.sp,
+                style = MaterialTheme.typography.labelLarge
             )
-        )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = time,
+                color = Color.White,
+                fontSize = 20.sp,
+                style = MaterialTheme.typography.headlineSmall
+            )
+        }
     }
 }
+
+
 
 @Composable
 fun CardSection(content: @Composable () -> Unit) {

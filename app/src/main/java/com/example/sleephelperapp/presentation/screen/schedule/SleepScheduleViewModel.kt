@@ -26,8 +26,8 @@ class SleepScheduleViewModel @Inject constructor(
     private val setSleepScheduleUseCase: SetSleepScheduleUseCase
 ) : ViewModel() {
     var wakeUpAlarmEnabled by mutableStateOf(false)
-    var sleepTimeAlarmEnabled by mutableStateOf(true)
-    var blackAndWhiteScreenEnabled by mutableStateOf(true)
+    var sleepTimeAlarmEnabled by mutableStateOf(false)
+    var blackAndWhiteScreenEnabled by mutableStateOf(false)
     var eyeComfortEnabled by mutableStateOf(false)
     var notificationOffEnabled by mutableStateOf(false)
     var doNotDisturbEnabled by mutableStateOf(false)
@@ -44,6 +44,20 @@ class SleepScheduleViewModel @Inject constructor(
 
     private val _showSleepTimePicker = mutableStateOf(false)
     val showSleepTimePicker: State<Boolean> = _showSleepTimePicker
+
+    private val _sleepTimeSchedule = mutableStateOf("11:00 PM")
+    val sleepTimeSchedule: State<String> = _sleepTimeSchedule
+
+    private val _wakeTimeSchedule = mutableStateOf("11:00 AM")
+    val wakeTimeSchedule: State<String> = _wakeTimeSchedule
+
+    fun updateSleepTimeSchedule(time: String){
+        _sleepTimeSchedule.value =time
+    }
+
+    fun updateWakeTimeSchedule(time: String){
+        _wakeTimeSchedule.value =time
+    }
 
     fun updateWakeUpTime(time: String) {
         _wakeUpTime.value = time
@@ -90,4 +104,5 @@ class SleepScheduleViewModel @Inject constructor(
     fun toggleFlightMode() {
         flightModeEnabled = !flightModeEnabled
     }
+
 }

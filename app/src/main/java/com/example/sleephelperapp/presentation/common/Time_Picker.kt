@@ -89,7 +89,6 @@ private fun formatTime(hour: Int, minute: Int): String {
 fun TimePicker() {
     var showTimePicker by remember { mutableStateOf(false) }
     var selectedTime by remember { mutableStateOf<SelectedTime?>(null) }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,12 +118,11 @@ fun TimePicker() {
     }
 }
 
-@Composable
+/*@Composable
 fun rememberTimePickerLauncher(
     onTimeSelected: (SelectedTime) -> Unit
 ): () -> Unit {
     var showDialog by remember { mutableStateOf(false) }
-
     if (showDialog) {
         TimePickerDialog(
             onTimeSelected = { time ->
@@ -164,7 +162,7 @@ fun AnotherExampleWithLauncher() {
             Text("Selected: ${it.formattedTime}")
         }
     }
-}
+}*/
 
 @Preview ()
 @Composable
