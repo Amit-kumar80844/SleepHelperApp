@@ -1,5 +1,6 @@
 package com.example.sleephelperapp.presentation.common
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.rememberTimePickerState
@@ -19,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.text.SimpleDateFormat
@@ -43,7 +47,7 @@ fun TimePickerDialog(
         initialMinute = currentTime.get(Calendar.MINUTE),
         is24Hour = false,
     )
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Select Time") },
@@ -51,6 +55,7 @@ fun TimePickerDialog(
             Column {
                 TimeInput(
                     state = timePickerState,
+                    colors = TimePickerDefaults.colors(clockDialColor = Color.White),
                 )
             }
         },
@@ -87,7 +92,7 @@ private fun formatTime(hour: Int, minute: Int): String {
 
 @Composable
 fun TimePicker() {
-    var showTimePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(true) }
     var selectedTime by remember { mutableStateOf<SelectedTime?>(null) }
     Column(
         modifier = Modifier
@@ -95,7 +100,6 @@ fun TimePicker() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        showTimePicker = true
         Spacer(modifier = Modifier.height(16.dp))
 
         selectedTime?.let { time ->
@@ -103,13 +107,12 @@ fun TimePicker() {
             Text("Hour: ${time.hour}, Minute: ${time.minute}")
         } ?: Text("No time selected")
     }
-
     if (showTimePicker) {
         TimePickerDialog(
             onTimeSelected = { time ->
                 selectedTime = time
                 showTimePicker = false
-                println("Time selected: ${time.formattedTime}")
+                Log.d("TimePicker", "Time selected: ${time.formattedTime}")
             },
             onDismiss = {
                 showTimePicker = false
@@ -117,52 +120,6 @@ fun TimePicker() {
         )
     }
 }
-
-/*@Composable
-fun rememberTimePickerLauncher(
-    onTimeSelected: (SelectedTime) -> Unit
-): () -> Unit {
-    var showDialog by remember { mutableStateOf(false) }
-    if (showDialog) {
-        TimePickerDialog(
-            onTimeSelected = { time ->
-                onTimeSelected(time)
-                showDialog = false
-            },
-            onDismiss = {
-                showDialog = false
-            }
-        )
-    }
-
-    return { showDialog = true }
-}
-
-@Composable
-fun AnotherExampleWithLauncher() {
-    var selectedTime by remember { mutableStateOf<SelectedTime?>(null) }
-    val timePickerLauncher = rememberTimePickerLauncher { time ->
-        selectedTime = time
-        println("Time selected via launcher: ${time.formattedTime}")
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = timePickerLauncher) {
-            Text("Pick Time (Launcher Approach)")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        selectedTime?.let {
-            Text("Selected: ${it.formattedTime}")
-        }
-    }
-}*/
 
 @Preview ()
 @Composable

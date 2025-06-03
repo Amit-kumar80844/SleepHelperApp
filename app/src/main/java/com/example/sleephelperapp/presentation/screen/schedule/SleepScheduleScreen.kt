@@ -48,20 +48,20 @@ fun SleepScheduleScreen(navigator: NavHostController, viewModel: SleepScheduleVi
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(topBarColor.value))
+            .background(topBarColor)
     ) {
         Text(
             text = "Schedule",
             color = Color.White,
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(8.dp)
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .background(Color(0xFF000000))
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 8.dp),
             contentAlignment = Alignment.TopStart
         ) {
             SleepScreen(viewModel)
@@ -84,8 +84,7 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
                 time = viewModel.wakeUpTime.value,
                 checked = viewModel.wakeUpAlarmEnabled,
                 onCheckedChange = { viewModel.toggleWakeUpAlarm() },
-                onTimeClick = {
-                    viewModel.showWakeUpTimePicker()
+                onTimeClick = { viewModel.showWakeUpTimePicker()
                 }
             )
         }
@@ -135,22 +134,15 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
                     ) {
                         ScheduleTimePicker(
                             label = "Start Time",
-                            time = "08:00 AM",
-                            onTimeClick = {viewModel.showWakeUpTimePicker()}
+                            time = viewModel.sleepTimeSchedule.value,
+                            onTimeClick = {viewModel.showSleepTimeSchedule()}
                         )
                         ScheduleTimePicker(
                             label = "End Time",
-                            time = "10:00 AM",
-                            onTimeClick = {viewModel.showWakeUpTimePicker() }
+                            time = viewModel.wakeTimeSchedule.value,
+                            onTimeClick = {viewModel.showWakeTimeSchedule() }
                         )
                     }
-
-                    /* ScheduleTimePicker("10:10 AM",{viewModel.showSleepTimePicker()})*/
-                    /*Text(
-                        text = "Sleep time  ${viewModel.sleepTime.value} - ${viewModel.wakeUpTime.value}",
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium
-                    )*/
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -197,8 +189,24 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
-
     // Time Picker Dialogs
+    if (viewModel.showSleepTimeSchedule.value) {
+        TimePickerDialog(
+            onTimeSelected = { selectedTime ->
+                viewModel.updateSleepTimeSchedule(selectedTime.formattedTime)
+                viewModel.hideSleepTimeSchedule()
+            },
+            onDismiss = {viewModel.hideSleepTimeSchedule() })
+    }
+    if(viewModel.showWakeTimeSchedule.value){
+        TimePickerDialog(
+            onTimeSelected = {
+                selectedTime -> viewModel.updateWakeTimeSchedule(selectedTime.formattedTime)
+                viewModel.hideWakeTimeSchedule()
+            },
+            onDismiss = { viewModel.hideWakeTimeSchedule()}
+        )
+    }
     if (viewModel.showWakeUpTimePicker.value) {
         TimePickerDialog(
             onTimeSelected = { selectedTime ->
@@ -267,7 +275,7 @@ fun AlarmToggleRow(
             colors = SwitchDefaults.colors(
                 checkedThumbColor = MaterialTheme.colorScheme.primary,
                 checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
             )
         )
@@ -305,8 +313,6 @@ fun ScheduleTimePicker(
         }
     }
 }
-
-
 
 @Composable
 fun CardSection(content: @Composable () -> Unit) {

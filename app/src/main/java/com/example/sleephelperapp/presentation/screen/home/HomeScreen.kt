@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -31,7 +32,6 @@ fun HomeScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
     Scaffold(
         bottomBar = {
             if (currentDestination?.route in listOf(
@@ -95,7 +95,6 @@ fun BottomNavigationBar(navController: NavHostController) {
     }
 }
 
-
 @Composable
 fun RowScope.AddItem(
     screen: BottomNavItem,
@@ -110,7 +109,8 @@ fun RowScope.AddItem(
         icon = {
             Icon(
                 imageVector = screen.icon,
-                contentDescription = screen.label
+                contentDescription = screen.label,
+                tint = Color.Black
             )
         },
         selected = selected,

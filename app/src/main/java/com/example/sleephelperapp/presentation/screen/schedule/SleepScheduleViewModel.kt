@@ -51,6 +51,12 @@ class SleepScheduleViewModel @Inject constructor(
     private val _wakeTimeSchedule = mutableStateOf("11:00 AM")
     val wakeTimeSchedule: State<String> = _wakeTimeSchedule
 
+    private val _showSleepTimeSchedule = mutableStateOf(false)
+    val showSleepTimeSchedule: State<Boolean> = _showSleepTimeSchedule
+
+    private val _showWakeTimeSchedule = mutableStateOf(false)
+    val showWakeTimeSchedule: State<Boolean> = _showWakeTimeSchedule
+
     fun updateSleepTimeSchedule(time: String){
         _sleepTimeSchedule.value =time
     }
@@ -58,7 +64,18 @@ class SleepScheduleViewModel @Inject constructor(
     fun updateWakeTimeSchedule(time: String){
         _wakeTimeSchedule.value =time
     }
-
+    fun showSleepTimeSchedule(){
+        _showSleepTimeSchedule.value = true
+    }
+    fun hideSleepTimeSchedule(){
+        _showSleepTimeSchedule.value = false
+        }
+    fun showWakeTimeSchedule(){
+        _showWakeTimeSchedule.value = true
+    }
+    fun hideWakeTimeSchedule(){
+        _showWakeTimeSchedule.value = false
+    }
     fun updateWakeUpTime(time: String) {
         _wakeUpTime.value = time
     }
@@ -104,5 +121,4 @@ class SleepScheduleViewModel @Inject constructor(
     fun toggleFlightMode() {
         flightModeEnabled = !flightModeEnabled
     }
-
 }
