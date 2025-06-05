@@ -22,7 +22,7 @@ class ToggleSleepSettingUseCase @Inject constructor(private val dao: SleepSchedu
 }
 
 class GetSleepScheduleUseCase @Inject constructor(private val dao: SleepScheduleDao) {
-     suspend operator fun invoke(): Flow<SleepScheduleEntity?> {
+     operator fun invoke(): Flow<SleepScheduleEntity?> {
         return dao.getSchedule()
     }
 }
@@ -30,5 +30,24 @@ class GetSleepScheduleUseCase @Inject constructor(private val dao: SleepSchedule
 class SetSleepScheduleUseCase @Inject constructor(private val dao :SleepScheduleDao) {
     suspend operator fun invoke(schedule: SleepScheduleEntity) {
         dao.insertSchedule(schedule)
+    }
+}
+
+class UpdateSleepTimeUseCase @Inject constructor(
+    private val dao: SleepScheduleDao
+) {
+    suspend operator fun invoke(
+        key: String,
+        newTime: String,
+        current: SleepScheduleEntity
+    ) {
+        val updated = when (key) {
+            "wakeUpTime" -> current.copy(wakeUpTime = newTime)
+            "sleepTime" -> current.copy(sleepTime = newTime)
+            "sleepTimeSchedule" -> current.copy(sleepTimeSchedule = newTime)
+            "wakeTimeSchedule" -> current.copy(wakeTimeSchedule = newTime)
+            else -> current
+        }
+        dao.updateSchedule(updated)
     }
 }

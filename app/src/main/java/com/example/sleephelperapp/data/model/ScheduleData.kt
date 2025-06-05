@@ -6,8 +6,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "sleep_schedule")
 data class SleepScheduleEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val wakeUpTime: String = "07:00 AM",
+    val wakeUpTime: String = "09:00 AM",
     val sleepTime: String = "11:00 PM",
+    val sleepTimeSchedule:String ="09:00 AM",
+    val wakeTimeSchedule:String ="11:00 PM",
     val wakeUpEnabled: Boolean = false,
     val sleepAlarmEnabled: Boolean = false,
     val eyeComfortEnabled: Boolean = false,
