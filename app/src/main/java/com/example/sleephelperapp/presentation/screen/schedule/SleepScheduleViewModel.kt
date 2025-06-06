@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sleephelperapp.data.model.SleepScheduleEntity
+import com.example.sleephelperapp.domain.repository.AlarmScheduler
 import com.example.sleephelperapp.domain.usecase.schedule.GetSleepScheduleUseCase
 import com.example.sleephelperapp.domain.usecase.schedule.SetSleepScheduleUseCase
 import com.example.sleephelperapp.domain.usecase.schedule.ToggleSleepSettingUseCase
@@ -25,7 +26,8 @@ class SleepScheduleViewModel @Inject constructor(
     private val toggleSleepSettingUseCase: ToggleSleepSettingUseCase,
     private val getSleepScheduleUseCase: GetSleepScheduleUseCase,
     private val setSleepScheduleUseCase: SetSleepScheduleUseCase,
-    private val updateSleepTimeUseCase : UpdateSleepTimeUseCase
+    private val updateSleepTimeUseCase : UpdateSleepTimeUseCase,
+    private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
     private val _schedule = MutableStateFlow<SleepScheduleEntity?>(null)
     val schedule: StateFlow<SleepScheduleEntity?> = _schedule.asStateFlow()
@@ -183,10 +185,20 @@ private fun updateSleepTime(key: String, newTime: String) {
     fun toggleWakeUpAlarm() {
         wakeUpAlarmEnabled = !wakeUpAlarmEnabled
         updateToggleSleepSetting("wakeUp", wakeUpAlarmEnabled)
+        if(wakeUpAlarmEnabled){
+            alarmScheduler.scheduleWakeUpAlarm(wakeUpTime.value)
+        }else{
+            alarmScheduler.cancelWakeUpAlarm()
+        }
     }
     fun toggleSleepTimeAlarm() {
         sleepTimeAlarmEnabled = !sleepTimeAlarmEnabled
         updateToggleSleepSetting("sleepAlarm", sleepTimeAlarmEnabled)
+        if(sleepTimeAlarmEnabled){
+            alarmScheduler.scheduleSleepAlarm(sleepTime.value)
+        }else{
+            alarmScheduler.cancelSleepAlarm()
+        }
     }
     fun toggleBlackAndWhiteScreen() {
         blackAndWhiteScreenEnabled = !blackAndWhiteScreenEnabled
