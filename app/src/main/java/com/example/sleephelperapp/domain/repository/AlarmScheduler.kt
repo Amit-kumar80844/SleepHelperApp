@@ -1,8 +1,7 @@
 package com.example.sleephelperapp.domain.repository
 
 interface AlarmScheduler {
-    fun scheduleSleepAlarm(time: String)
-    fun scheduleWakeUpAlarm(time: String)
-    fun cancelSleepAlarm()
-    fun cancelWakeUpAlarm()
+    fun scheduleAlarm(time: String,messageTitle:String="",message:String = "")
+    fun cancelAlarm()
+    fun scheduleSetting(startTime:String,endTime:String)
 }

@@ -170,34 +170,41 @@ private fun updateSleepTime(key: String, newTime: String) {
     }
     /**
      * picker  do not have @param*/
+
     fun showWakeUpTimePicker() {
         _showWakeUpTimePicker.value = true
     }
     fun hideWakeUpTimePicker() {
         _showWakeUpTimePicker.value = false
+        if(wakeUpAlarmEnabled){
+            alarmScheduler.scheduleAlarm(wakeUpTime.value,"Wakeup Time","Time to wake up!")
+        }
     }
     fun showSleepTimePicker() {
         _showSleepTimePicker.value = true
     }
     fun hideSleepTimePicker() {
         _showSleepTimePicker.value = false
+        if(sleepTimeAlarmEnabled){
+            alarmScheduler.scheduleAlarm(sleepTime.value,"Sleep Time","Time to fall asleep!")
+        }
     }
     fun toggleWakeUpAlarm() {
         wakeUpAlarmEnabled = !wakeUpAlarmEnabled
         updateToggleSleepSetting("wakeUp", wakeUpAlarmEnabled)
         if(wakeUpAlarmEnabled){
-            alarmScheduler.scheduleWakeUpAlarm(wakeUpTime.value)
+            alarmScheduler.scheduleAlarm(wakeUpTime.value,"Wake Up","Time to wake up!")
         }else{
-            alarmScheduler.cancelWakeUpAlarm()
+            alarmScheduler.cancelAlarm()
         }
     }
     fun toggleSleepTimeAlarm() {
         sleepTimeAlarmEnabled = !sleepTimeAlarmEnabled
         updateToggleSleepSetting("sleepAlarm", sleepTimeAlarmEnabled)
         if(sleepTimeAlarmEnabled){
-            alarmScheduler.scheduleSleepAlarm(sleepTime.value)
+            alarmScheduler.scheduleAlarm(sleepTime.value,"Sleep Time","Time to fall asleep!")
         }else{
-            alarmScheduler.cancelSleepAlarm()
+            alarmScheduler.cancelAlarm()
         }
     }
     fun toggleBlackAndWhiteScreen() {

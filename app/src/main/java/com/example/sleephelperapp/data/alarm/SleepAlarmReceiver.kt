@@ -7,17 +7,38 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 
 class SleepAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val ringtonePlayer = RingtoneManager.getRingtone(context, ringtone)
-        ringtonePlayer.play()
-        showNotification(context)
+        when(intent.action){
+            "com.example.sleephelperapp.SLEEP_ALARM_TRIGGERED"->{
+                val title = intent.getStringExtra("title") ?: "Sleep Alarm"
+                val message = intent.getStringExtra("message") ?: "Time to sleep!"
+                try {
+                    val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                        ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                    RingtoneManager.getRingtone(context, ringtoneUri)?.play()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                showNotification(context, title, message)
+            }
+            "com.example.sleephelperapp.SLEEP_START" -> {
+                Log.d("SleepAlarmReceiver", "Start alarm triggered")
+                /*functionA(context)*/
+            }
+            "com.example.sleephelperapp.SLEEP_END" -> {
+                Log.d("SleepAlarmReceiver", "End alarm triggered")
+               // functionB(context)
+            }
+            else -> {
+                Log.w("SleepAlarmReceiver", "Unknown alarm action: ${intent.action}")
+            }
+        }
     }
-    private fun showNotification(context: Context) {
+    private fun showNotification(context: Context, messageTitle:String="",message:String = "") {
         val channelId = "sleep_alarm_channel"
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -31,10 +52,10 @@ class SleepAlarmReceiver : BroadcastReceiver() {
         }
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setContentTitle("Sleep Alarm")
-            .setContentText("Time to sleep!")
+            .setContentTitle(messageTitle)
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
-        notificationManager.notify(1001, notification)
+        notificationManager.notify(0, notification)
     }
 }
