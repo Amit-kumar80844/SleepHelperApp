@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sleephelperapp.data.model.ScheduleToggleData
 import com.example.sleephelperapp.data.model.SleepScheduleEntity
 import com.example.sleephelperapp.domain.repository.AlarmScheduler
 import com.example.sleephelperapp.domain.usecase.schedule.GetSleepScheduleUseCase
@@ -104,6 +105,7 @@ class SleepScheduleViewModel @Inject constructor(
                     doNotDisturbEnabled = schedule.doNotDisturbEnabled
                     flightModeEnabled = schedule.flightModeEnabled
                 }
+                ScheduleToggleData().setScheduleEntity(schedule)
             }
         }
     }

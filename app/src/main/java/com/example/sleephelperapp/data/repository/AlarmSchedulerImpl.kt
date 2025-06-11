@@ -62,42 +62,50 @@ class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
 
     override fun scheduleSetting(startTime: String, endTime: String) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        // start time
+
+        // --- Start Time Alarm ---
         val intentStart = Intent(context, SleepAlarmReceiver::class.java).apply {
             action = "com.example.sleephelperapp.SLEEP_START"
         }
+
         val pendingStart = PendingIntent.getBroadcast(
             context,
             2001,
             intentStart,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
         val calendarStart = parseTime(startTime).apply {
-            if (before(Calendar.getInstance())) {
+            if (timeInMillis <= System.currentTimeMillis()) {
                 add(Calendar.DAY_OF_YEAR, 1)
             }
         }
+
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendarStart.timeInMillis,
             AlarmManager.INTERVAL_DAY,
             pendingStart
         )
-        //  End Time
+
+        // --- End Time Alarm ---
         val intentEnd = Intent(context, SleepAlarmReceiver::class.java).apply {
             action = "com.example.sleephelperapp.SLEEP_END"
         }
+
         val pendingEnd = PendingIntent.getBroadcast(
             context,
             2002,
             intentEnd,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
         val calendarEnd = parseTime(endTime).apply {
-            if (before(Calendar.getInstance())) {
+            if (timeInMillis <= System.currentTimeMillis()) {
                 add(Calendar.DAY_OF_YEAR, 1)
             }
         }
+
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendarEnd.timeInMillis,
