@@ -105,7 +105,7 @@ class SleepScheduleViewModel @Inject constructor(
                     doNotDisturbEnabled = schedule.doNotDisturbEnabled
                     flightModeEnabled = schedule.flightModeEnabled
                 }
-                ScheduleToggleData().setScheduleEntity(schedule)
+                ScheduleToggleData.setScheduleEntity(schedule.value)
             }
         }
     }
@@ -141,6 +141,8 @@ private fun updateSleepTime(key: String, newTime: String) {
     fun updateSleepTimeSchedule(time: String){
         _sleepTimeSchedule.value =time
         updateSleepTime("sleepTimeSchedule",time)
+        print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
+        alarmScheduler.scheduleSetting(sleepTimeSchedule.value , wakeTimeSchedule.value)
     }
     fun updateWakeTimeSchedule(time: String){
         _wakeTimeSchedule.value =time
@@ -155,6 +157,8 @@ private fun updateSleepTime(key: String, newTime: String) {
     }
     fun hideSleepTimeSchedule(){
         _showSleepTimeSchedule.value = false
+        print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
+        alarmScheduler.scheduleSetting(sleepTimeSchedule.value , wakeTimeSchedule.value)
     }
     fun showWakeTimeSchedule(){
         _showWakeTimeSchedule.value = true

@@ -1,11 +1,13 @@
 package com.example.sleephelperapp.data.model
 
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class ScheduleToggleData{
-    private lateinit var scheduleEntity: StateFlow<SleepScheduleEntity?>
-    fun getScheduleEntity(): StateFlow<SleepScheduleEntity?> = scheduleEntity
-    fun setScheduleEntity(value: StateFlow<SleepScheduleEntity?>) {
-        this.scheduleEntity = value
+object ScheduleToggleData {
+    private val _scheduleEntity = MutableStateFlow<SleepScheduleEntity?>(null)
+    val scheduleEntity: StateFlow<SleepScheduleEntity?> get() = _scheduleEntity
+    fun setScheduleEntity(value: SleepScheduleEntity?) {
+        _scheduleEntity.value = value
     }
 }
+
