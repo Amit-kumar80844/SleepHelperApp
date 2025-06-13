@@ -1,5 +1,7 @@
 package com.example.sleephelperapp.presentation.screen.schedule
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -83,8 +85,7 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
                 time = viewModel.wakeUpTime.value,
                 checked = viewModel.wakeUpAlarmEnabled,
                 onCheckedChange = { viewModel.toggleWakeUpAlarm() },
-                onTimeClick = { viewModel.showWakeUpTimePicker()
-                }
+                onTimeClick = { viewModel.showWakeUpTimePicker()}
             )
         }
 
@@ -161,12 +162,15 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
                     onCheckedChange = { viewModel.toggleEyeComfort() }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-
                 SchedulerToggleRow(
                     iconResId = R.drawable.outline_notifications_off_24,
                     text = "Notification Off",
                     checked = viewModel.notificationOffEnabled,
-                    onCheckedChange = { viewModel.toggleNotificationOff() }
+                    onCheckedChange = {
+                        if (!(viewModel.flightModeEnabled || viewModel.doNotDisturbEnabled)) {
+                            viewModel.toggleNotificationOff()
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -174,7 +178,19 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
                     iconResId = R.drawable.outline_do_not_disturb_on_24,
                     text = "Do not Disturb",
                     checked = viewModel.doNotDisturbEnabled,
-                    onCheckedChange = { viewModel.toggleDoNotDisturb() }
+                    onCheckedChange = {
+                        if (!viewModel.flightModeEnabled) {
+                            val wasDoNotDisturbOff = !viewModel.doNotDisturbEnabled
+                            viewModel.toggleDoNotDisturb()
+                            if (wasDoNotDisturbOff && viewModel.notificationOffEnabled) {
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    if (viewModel.notificationOffEnabled) {
+                                        viewModel.toggleNotificationOff()
+                                    }
+                                }, 100)
+                            }
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -182,7 +198,25 @@ fun SleepScreen(viewModel: SleepScheduleViewModel) {
                     iconResId = R.drawable.outline_flights_and_hotels_24,
                     text = "Flight Mode",
                     checked = viewModel.flightModeEnabled,
-                    onCheckedChange = { viewModel.toggleFlightMode() }
+                    onCheckedChange = {
+                        val wasFlightModeOff = !viewModel.flightModeEnabled
+
+                        viewModel.toggleFlightMode()
+
+                        if (wasFlightModeOff) {
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                if (viewModel.doNotDisturbEnabled) {
+                                    viewModel.toggleDoNotDisturb()
+                                }
+                            }, 100)
+
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                if (viewModel.notificationOffEnabled) {
+                                    viewModel.toggleNotificationOff()
+                                }
+                            }, 200)
+                        }
+                    }
                 )
             }
         }

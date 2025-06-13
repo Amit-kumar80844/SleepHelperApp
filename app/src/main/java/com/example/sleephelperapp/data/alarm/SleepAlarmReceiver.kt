@@ -9,10 +9,8 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sleephelperapp.data.model.ScheduleToggleData
 import com.example.sleephelperapp.presentation.screen.schedule.ScheduleService
-import com.example.sleephelperapp.presentation.screen.schedule.SleepScheduleViewModel
 
 class SleepAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -37,25 +35,29 @@ class SleepAlarmReceiver : BroadcastReceiver() {
     private fun sleepStart(context: Context) {
         val schedule = ScheduleToggleData.scheduleEntity.value
         val scheduleService = ScheduleService(context)
-
         if (schedule?.eyeComfortEnabled == true) {
             scheduleService.enableEyeComfort()
+            showNotification(context, "Eye Comfort Enabled", "Eye comfort enabled")
             Log.d("SleepAlarmReceiver", "Eye comfort enabled")
         }
         if (schedule?.blackAndWhiteEnabled == true) {
             scheduleService.enableBW()
+            showNotification(context , "Black and White Enabled", "Black and white enabled")
             Log.d("SleepAlarmReceiver", "Black and white enabled")
         }
         if (schedule?.notificationOffEnabled == true) {
             scheduleService.enableNotificationOff()
+            showNotification(context , "Notification Off Enabled", "Notification off enabled")
             Log.d("SleepAlarmReceiver", "Notification off enabled")
         }
         if (schedule?.doNotDisturbEnabled == true) {
             scheduleService.enableDoNotDisturb()
+            showNotification(context , "Do Not Disturb Enabled", "Do not disturb enabled")
             Log.d("SleepAlarmReceiver", "Do not disturb enabled")
         }
         if (schedule?.flightModeEnabled == true) {
-            scheduleService.enableFlightMod()
+            scheduleService.toggleFlightModeSettings()
+            showNotification(context , "Flight Mode Enabled", "Flight mode enabled")
             Log.d("SleepAlarmReceiver", "Flight mode enabled")
         }
     }
@@ -65,22 +67,27 @@ class SleepAlarmReceiver : BroadcastReceiver() {
         val scheduleService = ScheduleService(context)
         if(scheduleData?.eyeComfortEnabled == true){
             scheduleService.disableEyeComfort()
+            showNotification(context , "Eye Comfort Disabled", "Eye comfort disabled")
             Log.d("SleepAlarmReceiver", "Eye comfort disabled")
         }
         if(scheduleData?.blackAndWhiteEnabled == true){
             scheduleService.disableBW()
+            showNotification(context ,  "Black and White Disabled", "Black and white disabled")
             Log.d("SleepAlarmReceiver", "Black and white disabled")
         }
         if(scheduleData?.notificationOffEnabled == true){
             scheduleService.disableNotificationOff()
+            showNotification(context , "Notification Off Disabled", "Notification off disabled")
             Log.d("SleepAlarmReceiver", "Notification off disabled")
         }
         if(scheduleData?.doNotDisturbEnabled == true){
             scheduleService.disableDoNotDisturb()
+            showNotification(context , "Do Not Disturb Disabled", "Do not disturb disabled")
             Log.d("SleepAlarmReceiver", "Do not disturb disabled")
         }
         if(scheduleData?.flightModeEnabled == true){
-            scheduleService.disableFlightMod()
+            scheduleService.toggleFlightModeSettings()
+            showNotification(context , "Flight Mode Disabled", "Flight mode disabled")
             Log.d("SleepAlarmReceiver", "Flight mode disabled")
         }
     }

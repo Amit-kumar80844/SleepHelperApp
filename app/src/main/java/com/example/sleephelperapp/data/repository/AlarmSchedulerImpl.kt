@@ -62,8 +62,6 @@ class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
 
     override fun scheduleSetting(startTime: String, endTime: String) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        // --- Start Time Alarm ---
         val intentStart = Intent(context, SleepAlarmReceiver::class.java).apply {
             action = "com.example.sleephelperapp.SLEEP_START"
         }

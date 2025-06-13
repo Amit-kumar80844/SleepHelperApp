@@ -11,99 +11,194 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.Window
+import androidx.core.content.ContextCompat
 
 class ScheduleService(private val context: Context) {
+    companion object {
+        private const val TAG = "ScheduleService"
+    }
 
+    /**
+     * Applies a grayscale effect to the entire activity window.
+     * This is more efficient than recursively traversing the view hierarchy.
+     */
     fun enableBW() {
-        val activity = context as? Activity ?: return
-        val rootView = activity.findViewById<View>(android.R.id.content)
-        rootView.setGrayscale(true)
+        setHardwareLayerSaturation(0f)
     }
 
+    /**
+     * Removes the grayscale effect from the activity window.
+     */
     fun disableBW() {
-        val activity = context as? Activity ?: return
-        val rootView = activity.findViewById<View>(android.R.id.content)
-        rootView.setGrayscale(false)
+        setHardwareLayerSaturation(1f)
     }
 
+    /**
+     * Applies a blue light filter to the entire activity window.
+     */
     fun enableEyeComfort() {
-        val view = (context as? Activity)?.window?.decorView?.rootView ?: return
         val colorMatrix = ColorMatrix().apply {
             set(floatArrayOf(
-                1f, 0f, 0f, 0f, 0f,
-                0f, 1f, 0f, 0f, 0f,
-                0f, 0f, 0.5f, 0f, 0f,
-                0f, 0f, 0f, 1f, 0f
+                1.0f, 0.0f, 0.0f, 0.0f, 0.0f,    // Red channel
+                0.0f, 0.9f, 0.0f, 0.0f, 0.0f,    // Green channel (slightly reduced)
+                0.0f, 0.0f, 0.7f, 0.0f, 0.0f,    // Blue channel (reduced)
+                0.0f, 0.0f, 0.0f, 1.0f, 0.0f     // Alpha channel
             ))
         }
-        val filter = ColorMatrixColorFilter(colorMatrix)
-        val paint = Paint().apply { colorFilter = filter }
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
+        setHardwareLayerColorFilter(ColorMatrixColorFilter(colorMatrix))
     }
 
+    /**
+     * Removes the blue light filter from the activity window.
+     */
     fun disableEyeComfort() {
-        val view = (context as? Activity)?.window?.decorView?.rootView ?: return
-        view.setLayerType(View.LAYER_TYPE_NONE, null)
+        setHardwareLayerColorFilter(null)
     }
 
-    fun enableNotificationOff() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (notificationManager.isNotificationPolicyAccessGranted) {
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
-                Log.d("ScheduleService", "Notification filter set to NONE")
-            } else {
-                Log.w("ScheduleService", "Notification policy access not granted")
-                // Optional: Prompt user via UI if context is an Activity
+    /**
+     * Enables Do Not Disturb mode, silencing all notifications.
+     * Requires Notification Policy Access permission.
+     * @return true if successful, false otherwise.
+     */
+    fun enableDoNotDisturb(): Boolean {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+            ?: return false
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!notificationManager.isNotificationPolicyAccessGranted) {
+                Log.w(TAG, "Notification policy access not granted.")
+                requestNotificationPolicyAccess()
+                return false
             }
+            notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+            Log.d(TAG, "Do Not Disturb enabled successfully.")
+            return true
         } else {
-            Log.w("ScheduleService", "Notification policy changes not supported below Android N")
+            // For older versions, this is the closest equivalent
+            // This requires the DND permission but is deprecated.
+            // Consider handling this case based on your target audience.
+            Log.w(TAG, "Do Not Disturb not fully supported below Android M.")
+            return false
         }
     }
 
-    fun disableNotificationOff() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    /**
+     * Disables Do Not Disturb mode, allowing all notifications.
+     * @return true if successful, false otherwise.
+     */
+    fun disableDoNotDisturb(): Boolean {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+            ?: return false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!notificationManager.isNotificationPolicyAccessGranted) {
+                Log.w(TAG, "Notification policy access not granted.")
+                requestNotificationPolicyAccess()
+                return false
+            }
+        }
         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+        Log.d(TAG, "Do Not Disturb disabled successfully.")
+        return true
     }
 
-    fun enableDoNotDisturb() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (notificationManager.isNotificationPolicyAccessGranted) {
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-            } else {
-                Log.w("ScheduleService", "Do Not Disturb access not granted")
+    /**
+     * Turns off all notifications.
+     * Requires Notification Policy Access permission.
+     * @return true if successful, false otherwise.
+     */
+    fun enableNotificationOff(): Boolean {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+                ?: return false
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!notificationManager.isNotificationPolicyAccessGranted) {
+                Log.w(TAG, "Notification policy access not granted.")
+                requestNotificationPolicyAccess()
+                return false
+            }
+            notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+            Log.d(TAG, "Notifications turned off successfully.")
+            return true
+        } else {
+            Log.w(TAG, "Turning off notifications is not supported below Android M.")
+            return false
+        }
+    }
+
+    /**
+     * Turns notifications back on to the default state (all).
+     * @return true if successful, false otherwise.
+     */
+    fun disableNotificationOff(): Boolean {
+        return disableDoNotDisturb() // Functionally the same
+    }
+
+
+    /**
+     * Opens the Airplane Mode settings screen.
+     * Direct programmatic toggling of Airplane Mode is restricted by Android for security reasons.
+     */
+    fun toggleFlightModeSettings() {
+        val intent = Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        } else {
+            Log.e(TAG, "Could not open Airplane Mode settings.")
+        }
+    }
+
+    /**
+     * Checks if the app has been granted Notification Policy Access.
+     * @return true if access is granted, false otherwise.
+     */
+    fun hasNotificationPolicyAccess(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java)
+            return notificationManager?.isNotificationPolicyAccessGranted == true
+        }
+        return false // Not required for older APIs
+    }
+
+
+    /**
+     * Launches an intent to the settings screen where the user can grant
+     * Notification Policy Access.
+     */
+    private fun requestNotificationPolicyAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+            if (context !is Activity) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Could not open notification policy settings", e)
             }
         }
     }
 
-    fun disableDoNotDisturb() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-    }
+    private fun setHardwareLayerColorFilter(colorFilter: ColorMatrixColorFilter?) {
+        val activity = context as? Activity ?: return
+        val window: Window = activity.window
+        val decorView = window.decorView
 
-    fun enableFlightMod() {
-        context.startActivity(Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
-    }
-
-    fun disableFlightMod() {
-        // NOTE: You can't programmatically disable airplane mode on Android 4.2+ (security restriction)
-        context.startActivity(Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
-    }
-}
-
-fun View.setGrayscale(enabled: Boolean) {
-    if (enabled) {
-        val colorMatrix = ColorMatrix().apply { setSaturation(0f) }
-        val paint = Paint().apply {
-            colorFilter = ColorMatrixColorFilter(colorMatrix)
+        if (colorFilter != null) {
+            val paint = Paint().apply { this.colorFilter = colorFilter }
+            decorView.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
+        } else {
+            decorView.setLayerType(View.LAYER_TYPE_NONE, null)
         }
-        setLayerType(View.LAYER_TYPE_HARDWARE, paint)
-    } else {
-        setLayerType(View.LAYER_TYPE_NONE, null)
+    }
+
+    private fun setHardwareLayerSaturation(saturation: Float) {
+        val colorMatrix = ColorMatrix().apply {
+            setSaturation(saturation)
+        }
+        setHardwareLayerColorFilter(ColorMatrixColorFilter(colorMatrix))
     }
 }

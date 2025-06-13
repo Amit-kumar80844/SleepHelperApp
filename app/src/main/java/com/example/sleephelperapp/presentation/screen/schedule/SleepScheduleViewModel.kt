@@ -1,5 +1,8 @@
 package com.example.sleephelperapp.presentation.screen.schedule
 
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -7,8 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sleephelperapp.data.alarm.SleepAlarmReceiver
 import com.example.sleephelperapp.data.model.ScheduleToggleData
 import com.example.sleephelperapp.data.model.SleepScheduleEntity
+import com.example.sleephelperapp.domain.model.checkAnyOn
 import com.example.sleephelperapp.domain.repository.AlarmScheduler
 import com.example.sleephelperapp.domain.usecase.schedule.GetSleepScheduleUseCase
 import com.example.sleephelperapp.domain.usecase.schedule.SetSleepScheduleUseCase
@@ -21,6 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class SleepScheduleViewModel @Inject constructor(
@@ -28,7 +34,8 @@ class SleepScheduleViewModel @Inject constructor(
     private val getSleepScheduleUseCase: GetSleepScheduleUseCase,
     private val setSleepScheduleUseCase: SetSleepScheduleUseCase,
     private val updateSleepTimeUseCase : UpdateSleepTimeUseCase,
-    private val alarmScheduler: AlarmScheduler
+    private val alarmScheduler: AlarmScheduler,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _schedule = MutableStateFlow<SleepScheduleEntity?>(null)
     val schedule: StateFlow<SleepScheduleEntity?> = _schedule.asStateFlow()
@@ -39,7 +46,6 @@ class SleepScheduleViewModel @Inject constructor(
     var notificationOffEnabled by mutableStateOf(false)
     var doNotDisturbEnabled by mutableStateOf(false)
     var flightModeEnabled by mutableStateOf(false)
-
     private val _wakeUpTime = mutableStateOf("07:00 AM")
     val wakeUpTime: State<String> = _wakeUpTime
 
@@ -63,6 +69,59 @@ class SleepScheduleViewModel @Inject constructor(
 
     private val _showWakeTimeSchedule = mutableStateOf(false)
     val showWakeTimeSchedule: State<Boolean> = _showWakeTimeSchedule
+    private fun initiateTimeSchedule(){
+        /*print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")*/
+        try {
+            if(callForCheck()){
+                handleScheduleAlarmOn()
+                Log.d("SleepScheduleViewModel", "initiateTimeSchedule called")
+                alarmScheduler.scheduleSetting(sleepTimeSchedule.value , wakeTimeSchedule.value)
+            }
+        }catch (e : Exception){
+            Log.d("SleepScheduleViewModel", "initiateTimeSchedule error: $e")
+        }
+    }
+    private fun handleScheduleAlarmOn(){
+        var intent = Intent(context, SleepAlarmReceiver::class.java).apply {
+            action = "com.example.sleephelperapp.SLEEP_START"
+        }
+        var pendingIntent = PendingIntent.getBroadcast(
+            context,
+            2001,
+            intent,
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        )
+        var isAlarmSet = pendingIntent != null
+        Log.d("AlarmCheck", "Alarm is set: $isAlarmSet")
+        if (isAlarmSet){
+            alarmScheduler.cancelAlarm()
+        }
+        intent = Intent(context, SleepAlarmReceiver::class.java).apply {
+            action = "com.example.sleephelperapp.SLEEP_END"
+        }
+        pendingIntent = PendingIntent.getBroadcast(
+            context,
+            2002,
+            intent,
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        )
+        isAlarmSet = pendingIntent != null
+        Log.d("AlarmCheck", "Alarm is set: $isAlarmSet")
+        if (isAlarmSet){
+            alarmScheduler.cancelAlarm()
+        }
+    }
+    private fun  callForCheck():Boolean{
+        return checkAnyOn(
+            wakeUpAlarmEnabled,
+            sleepTimeAlarmEnabled,
+            blackAndWhiteScreenEnabled,
+            eyeComfortEnabled,
+            notificationOffEnabled,
+            doNotDisturbEnabled,
+            flightModeEnabled
+        )
+    }
 
     init {
       /*  println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")*/
@@ -141,8 +200,7 @@ private fun updateSleepTime(key: String, newTime: String) {
     fun updateSleepTimeSchedule(time: String){
         _sleepTimeSchedule.value =time
         updateSleepTime("sleepTimeSchedule",time)
-        print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
-        alarmScheduler.scheduleSetting(sleepTimeSchedule.value , wakeTimeSchedule.value)
+        initiateTimeSchedule()
     }
     fun updateWakeTimeSchedule(time: String){
         _wakeTimeSchedule.value =time
@@ -157,14 +215,14 @@ private fun updateSleepTime(key: String, newTime: String) {
     }
     fun hideSleepTimeSchedule(){
         _showSleepTimeSchedule.value = false
-        print("llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
-        alarmScheduler.scheduleSetting(sleepTimeSchedule.value , wakeTimeSchedule.value)
+        initiateTimeSchedule()
     }
     fun showWakeTimeSchedule(){
         _showWakeTimeSchedule.value = true
     }
     fun hideWakeTimeSchedule(){
         _showWakeTimeSchedule.value = false
+        initiateTimeSchedule()
     }
     fun updateWakeUpTime(time: String) {
         _wakeUpTime.value = time
@@ -216,21 +274,26 @@ private fun updateSleepTime(key: String, newTime: String) {
     fun toggleBlackAndWhiteScreen() {
         blackAndWhiteScreenEnabled = !blackAndWhiteScreenEnabled
         updateToggleSleepSetting("bwScreen", blackAndWhiteScreenEnabled)
+        initiateTimeSchedule()
     }
     fun toggleEyeComfort() {
         eyeComfortEnabled = !eyeComfortEnabled
         updateToggleSleepSetting("eyeComfort", eyeComfortEnabled)
+        initiateTimeSchedule()
     }
     fun toggleNotificationOff() {
         notificationOffEnabled = !notificationOffEnabled
         updateToggleSleepSetting("notificationOff", notificationOffEnabled)
+        initiateTimeSchedule()
     }
     fun toggleDoNotDisturb() {
         doNotDisturbEnabled = !doNotDisturbEnabled
         updateToggleSleepSetting("doNotDisturb", doNotDisturbEnabled)
+        initiateTimeSchedule()
     }
     fun toggleFlightMode() {
         flightModeEnabled = !flightModeEnabled
         updateToggleSleepSetting("flightMode", flightModeEnabled)
+        initiateTimeSchedule()
     }
 }
